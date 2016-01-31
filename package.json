@@ -6,13 +6,15 @@
   "author": "Beau Gunderson <beau@beaugunderson.com> (https://beaugunderson.com/)",
   "license": "MIT",
   "dependencies": {
+    "bot-utilities": "^2.5.0",
     "canvas-utilities": "^2.2.0",
     "color": "^0.11.1",
-    "lodash": "^4.1.0"
+    "lodash": "^4.1.0",
+    "twit": "^2.1.7"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node cat-snacks.js"
+    "start": "node test.js && open output.png"
   },
   "repository": {
     "type": "git",

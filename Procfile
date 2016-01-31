@@ -1,1 +1,2 @@
-tweet: npm start
+tweet: node cat-snacks.js tweet
+random: node cat-snacks.js tweet --random
