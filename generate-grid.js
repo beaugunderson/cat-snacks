@@ -19,29 +19,24 @@ var height = (catWidth * perCol) + (spacingPx * (perCol - 1));
 function catGrid(canvas) {
   var ctx = canvas.getContext('2d');
 
-  var buffers = [];
+  function drawCatOnCanvas(buffer, index) {
+    var col = index % perRow;
+    var row = Math.floor(index / perRow);
+    var unit = catWidth + spacingPx;
+    var x = spacingPx + (unit * col);
+    var y = spacingPx + (unit * row);
 
-  function drawGridOnCanvas() {
-    for (var i = 0; i < howMany; i++) {
-      var col = i % perRow;
-      var row = Math.floor(i / perRow);
-      var unit = catWidth + spacingPx;
-      var x = spacingPx + (unit * col);
-      var y = spacingPx + (unit * row);
-
-      var img = new Image;
-      img.src = buffers[i];
-      ctx.drawImage(img, x, y);
-    }
+    var img = new Image;
+    img.src = buffer;
+    ctx.drawImage(img, x, y);
   }
 
   for (var i = 0; i < howMany; i++) {
-    cat(function (err, buffer) {
-      buffers.push(buffer);
-      if (buffers.length == howMany) {
-        drawGridOnCanvas();
-      }
-    });
+    (function(index) {
+      cat(function (err, buffer) {
+        drawCatOnCanvas(buffer, index);
+      });
+    })(i);
   }
 }
 
