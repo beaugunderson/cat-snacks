@@ -50,8 +50,8 @@ function cat(canvas, drawControlPoints) {
     oddEyeProb: 0.25,
     oddEyeColor: _.sample(EYE_COLORS),
     droop: Math.random() < 0.5,
-    whiskerFactorX: _.random(0.8, 1.2),
-    whiskerFactorY: _.random(0.8, 1.2)
+    whiskerFactorX: _.random(0.85, 1.01),
+    whiskerFactorY: _.random(0.85, 1.01)
   };
 
   options.noseOffsetY = options.centerY +
