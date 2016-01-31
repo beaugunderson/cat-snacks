@@ -11,7 +11,7 @@ var program = require('commander');
 
 program
   .command('tweet')
-  .description('Generate and tweet a rap/news mashup')
+  .description('Generate and tweet a beautiful cat')
   .option('-r, --random', 'only post a percentage of the time')
   .action(botUtilities.randomCommand(function () {
     var T = new Twit(botUtilities.getTwitterAuthFromEnv());
