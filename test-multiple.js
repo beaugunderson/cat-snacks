@@ -1,13 +1,8 @@
 'use strict';
 
-var cat = require('./generate-cat.js');
+var catGrid = require('./generate-grid.js');
 var fs = require('fs');
 
-for (var i = 1; i <= 16; i++) {
-  (function(number) {
-    cat(function (err, buffer) {
-      var filename = './output-grid-' + number + '.png';
-      fs.writeFileSync(filename, buffer);
-    });
-  })(i);
-}
+catGrid(function (err, buffer) {
+  fs.writeFileSync('./output-grid.png', buffer);
+});
