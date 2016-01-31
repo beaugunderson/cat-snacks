@@ -9,9 +9,7 @@ Send a pull request, ask for help, and please abide by the
 
 ### Help wanted
 
-- whiskers that droop (using bezierTo)
 - more colors (or color sets, colors that work well together)
-- mismatched eye colors
 - accessories
 - different mouths
 - an 8-bit version
