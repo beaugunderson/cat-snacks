@@ -49,6 +49,8 @@ function cat(canvas, drawControlPoints) {
     tabbyFactorY: _.random(0.9, 1.1),
     catColor: _.sample(HEAD_COLORS),
     eyeColor: _.sample(EYE_COLORS),
+    oddEyeProb: 0.25,
+    oddEyeColor: _.sample(EYE_COLORS),
     droop: Math.random() < 0.5,
     whiskerFactorX: _.random(0.85, 1.01),
     whiskerFactorY: _.random(0.85, 1.01)
