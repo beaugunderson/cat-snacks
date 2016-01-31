@@ -16,7 +16,9 @@
     "budo": "^8.0.2"
   },
   "scripts": {
-    "start": "node test.js && open output.png"
+    "start": "node test.js && open output.png",
+    "grid": "node test-multiple && open output-grid.png",
+    "dev": "budo dev.js --live"
   },
   "repository": {
     "type": "git",
