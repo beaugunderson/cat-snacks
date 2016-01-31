@@ -46,7 +46,8 @@ function cat(canvas, drawControlPoints) {
     earFactorX: _.random(0.9, 1.15),
     earFactorY: _.random(0.9, 1.1),
     catColor: _.sample(HEAD_COLORS),
-    eyeColor: _.sample(EYE_COLORS)
+    eyeColor: _.sample(EYE_COLORS),
+    secondaryEyeColor: _.sample(EYE_COLORS)
   };
 
   options.noseOffsetY = options.centerY +
