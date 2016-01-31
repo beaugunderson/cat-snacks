@@ -45,6 +45,8 @@ function cat(canvas, drawControlPoints) {
     centerY: canvas.height / 2,
     earFactorX: _.random(0.9, 1.15),
     earFactorY: _.random(0.9, 1.1),
+    tabbyFactorX: _.random(0.9, 1.2),
+    tabbyFactorY: _.random(0.9, 1.1),
     catColor: _.sample(HEAD_COLORS),
     eyeColor: _.sample(EYE_COLORS),
     droop: Math.random() < 0.5,
