@@ -1,6 +1,5 @@
 'use strict';
 
-var Canvas = require('canvas-utilities').Canvas;
 var _ = require('lodash');
 
 var background = require('./lib/background.js');
@@ -40,7 +39,7 @@ var BACKGROUND_COLORS = [
   'white'
 ];
 
-function cat(canvas, drawControlPoints) {
+module.exports = function cat(canvas, drawControlPoints) {
   var ctx = canvas.getContext('2d');
 
   // Math.seedrandom('meow');
@@ -108,11 +107,3 @@ function cat(canvas, drawControlPoints) {
     bezierTo.points.forEach(p => controlPoint.apply(null, [ctx].concat(p)));
   }
 }
-
-module.exports = function (cb) {
-  var canvas = new Canvas(600, 600);
-
-  cat(canvas);
-
-  canvas.toBuffer(cb);
-};

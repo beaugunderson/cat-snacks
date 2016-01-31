@@ -1,6 +1,6 @@
 'use strict';
 
-var cat = require('./generate-cat.js');
+var cat = require('./generate-cat-buffer');
 var fs = require('fs');
 
 cat(function (err, buffer) {

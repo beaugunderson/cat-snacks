@@ -3,7 +3,7 @@
 var Canvas = require('canvas-utilities').Canvas;
 var Image = require('canvas').Image;
 
-var cat = require('./generate-cat.js');
+var cat = require('./generate-cat-buffer');
 
 // TODO get this from cat?
 var catWidth = 600;
