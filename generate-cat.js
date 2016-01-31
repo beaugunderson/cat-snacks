@@ -86,7 +86,7 @@ function cat(canvas, drawControlPoints) {
 module.exports = function (cb) {
   var canvas = new Canvas(600, 600);
 
-  cat(canvas, true);
+  cat(canvas);
 
   canvas.toBuffer(cb);
 };
