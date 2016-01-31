@@ -14,6 +14,9 @@ var mouth = require('./lib/mouth.js');
 var nose = require('./lib/nose.js');
 var whiskers = require('./lib/whiskers.js');
 
+// TODO: define sets of colors that look nice together (so you don't get a face
+// color that 's the same as the eye color, for example), or maybe pick based
+// on not having a contrast between colors that's too low?
 var HEAD_COLORS = [
   '#ffffff',
   '#cccccc',
@@ -22,10 +25,19 @@ var HEAD_COLORS = [
 ];
 
 var EYE_COLORS = [
-  //'#013391',
+  '#013391',
+  '#704E0C',
   '#000000',
-  //'#704E0C',
-  '#333333'
+  '#333333',
+  '#02779e'
+];
+
+var BACKGROUND_COLORS = [
+  '#75a480',
+  '#66757f',
+  '#999999',
+  '#cccccc',
+  'white'
 ];
 
 function cat(canvas, drawControlPoints) {
@@ -37,6 +49,7 @@ function cat(canvas, drawControlPoints) {
   //_ = _.runInContext();
 
   var options = {
+    // dimensions
     width: canvas.width,
     height: canvas.height,
     headWidth: _.random(canvas.width * 0.3, canvas.width * 0.4),
@@ -45,12 +58,21 @@ function cat(canvas, drawControlPoints) {
     centerY: canvas.height / 2,
     earFactorX: _.random(0.9, 1.15),
     earFactorY: _.random(0.9, 1.1),
-    tabbyFactorX: _.random(0.9, 1.2),
-    tabbyFactorY: _.random(0.9, 1.1),
+
+    // colors
     catColor: _.sample(HEAD_COLORS),
     eyeColor: _.sample(EYE_COLORS),
-    oddEyeProb: 0.25,
+    backgroundColor: _.sample(BACKGROUND_COLORS),
+
+    // eyes
+    oddEyePercentage: 15,
     oddEyeColor: _.sample(EYE_COLORS),
+
+    // markings
+    tabbyFactorX: _.random(0.9, 1.2),
+    tabbyFactorY: _.random(0.9, 1.1),
+
+    // whiskers
     droop: Math.random() < 0.5,
     whiskerFactorX: _.random(0.85, 1.01),
     whiskerFactorY: _.random(0.85, 1.01)
