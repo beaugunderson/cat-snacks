@@ -12,7 +12,9 @@
     "lodash": "^4.1.0",
     "twit": "^2.1.7"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "budo": "^8.0.2"
+  },
   "scripts": {
     "start": "node test.js && open output.png"
   },
