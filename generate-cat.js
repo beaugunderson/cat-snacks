@@ -2,15 +2,10 @@
 
 var Canvas = require('canvas-utilities').Canvas;
 var Color = require('color');
-
-var fs = require('fs');
 var _ = require('lodash');
 
 var CANVAS_WIDTH = 600;
 var CANVAS_HEIGHT = 600;
-
-var canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-var ctx = canvas.getContext('2d');
 
 var CENTER_X = CANVAS_WIDTH / 2;
 var CENTER_Y = CANVAS_WIDTH / 2;
@@ -29,7 +24,9 @@ var EYE_COLORS = [
   '#333333'
 ];
 
-function cat(drawControlPoints) {
+function cat(canvas, drawControlPoints) {
+  var ctx = canvas.getContext('2d');
+
   // Math.seedrandom('meow');
 
   // Make lodash use our seeded random
@@ -49,10 +46,6 @@ function cat(drawControlPoints) {
 
   var EAR_FACTOR_X = _.random(0.9, 1.15);
   var EAR_FACTOR_Y = _.random(0.9, 1.1);
-
-  ctx.fillStyle = '#999999';
-
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   ctx.fillStyle = 'white';
   ctx.lineCap = 'round';
@@ -185,9 +178,8 @@ function cat(drawControlPoints) {
     ears();
     ctx.stroke();
 
-    ctx.globalCompositeOperation = 'source-over';
-
     ctx.fillStyle = 'black';
+    ctx.globalCompositeOperation = 'source-over';
   }
 
   function eyes() {
@@ -323,12 +315,20 @@ function cat(drawControlPoints) {
     ctx.lineWidth = 8;
   }
 
+  function background() {
+    ctx.fillStyle = _.sample(['#66757f', '#999999', '#cccccc', 'white']);
+    ctx.globalCompositeOperation = 'destination-over';
+
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    ctx.fillStyle = 'black';
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   headMask();
-
   headMarkings();
-
   headOutline();
 
   nose();
@@ -339,15 +339,19 @@ function cat(drawControlPoints) {
     whiskers();
   }
 
+  background();
+
   if (drawControlPoints) {
     controlPoints.forEach(point => controlPoint.apply(null, point));
   }
 }
 
-cat();
-
 // setInterval(cat, 500);
 
-canvas.toBuffer(function (err, buffer) {
-  fs.writeFileSync('./output.png', buffer);
-});
+module.exports = function (cb) {
+  var canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+
+  cat(canvas);
+
+  canvas.toBuffer(cb);
+};
