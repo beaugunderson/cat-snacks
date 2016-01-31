@@ -54,11 +54,8 @@ function cat(canvas, drawControlPoints) {
     whiskerFactorY: _.random(0.85, 1.01)
   };
 
-  options.noseOffsetY = options.centerY +
-    (options.headHeight * _.random(-0.05, 0.2));
-
-  options.eyeOffsetY = options.centerY -
-    (options.headHeight * _.random(0.25, 0.35));
+  options.eyeOffsetY = -options.headHeight * _.random(0.25, 0.35);
+  options.noseOffsetY = options.headHeight * _.random(-0.05, 0.2);
 
   options.mouthWidth = options.headWidth * _.random(0.25, 0.35);
   options.mouthHeight = options.headHeight * _.random(0.15, 0.35);

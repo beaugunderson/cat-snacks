@@ -20,5 +20,3 @@ Send a pull request, ask for help, and please abide by the
 ### TODO
 
 - document how to add new parts
-- use 'translate, then draw' style of drawing to make drawing easier
-  (removes X and Y from each draw call)
