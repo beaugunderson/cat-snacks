@@ -1,6 +1,6 @@
 'use strict';
 
-var bezierTo = require('./bezier-to.js');
+var bezierTo = require('../lib/bezier-to.js');
 
 function ear(ctx, options, flip) {
   var offset = flip ? -1 : 1;

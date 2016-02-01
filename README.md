@@ -30,14 +30,14 @@ please feel free to:
 Let's say you wanted to add tabby markings, you could accomplish that with
 these steps:
 
-- make a new file for the drawing code: `./lib/tabby-markings.js`
+- make a new file for the drawing code: `./parts/tabby-markings.js`
 - put a function in `module.exports of that file that takes `ctx` and `options`
   parameters
 - add options to `generate-cat.js` if it makes sense to (for example maybe you
   want to be able to expose some of the parameters for tweaking)
 - import your module from the module that will call it, in this case
-  `./lib/head-markings.js` and call it where it makes sense to (in this case by
-  adding it to the list of randomly-chosen facial marking functions)
+  `./parts/head-markings.js` and call it where it makes sense to (in this case
+  by adding it to the list of randomly-chosen facial marking functions)
 
 ### Help wanted!
 

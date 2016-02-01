@@ -1,6 +1,6 @@
 'use strict';
 
-var bezierTo = require('./bezier-to.js');
+var bezierTo = require('../lib/bezier-to.js');
 var Color = require('color');
 
 function tabbyForeheadStripeSide(ctx, options, flip) {

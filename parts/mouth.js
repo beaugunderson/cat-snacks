@@ -1,6 +1,6 @@
 'use strict';
 
-var bezierTo = require('./bezier-to.js');
+var bezierTo = require('../lib/bezier-to.js');
 
 module.exports = function (ctx, options) {
   ctx.save();

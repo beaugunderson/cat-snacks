@@ -1,7 +1,7 @@
 'use strict';
 
-var cat = require('../generate-cat.js');
-var grid = require('../generate-grid.js');
+var cat = require('../lib/generate-cat.js');
+var grid = require('../lib/generate-grid.js');
 var $ = require('jquery');
 
 var DIMENSION = 800;

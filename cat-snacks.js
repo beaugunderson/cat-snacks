@@ -1,8 +1,8 @@
 'use strict';
 
 var botUtilities = require('bot-utilities');
-var cat = require('./generate-cat.js');
-var grid = require('./generate-grid.js');
+var cat = require('./lib/generate-cat.js');
+var grid = require('./lib/generate-grid.js');
 var Twit = require('twit');
 var _ = require('lodash');
 

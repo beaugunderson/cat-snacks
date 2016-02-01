@@ -1,6 +1,6 @@
 'use strict';
 
-var catGrid = require('./generate-grid.js');
+var catGrid = require('../lib/generate-grid.js');
 var fs = require('fs');
 
 console.log('generating...');
