@@ -6,6 +6,7 @@
   "author": "Beau Gunderson <beau@beaugunderson.com> (https://beaugunderson.com/)",
   "license": "MIT",
   "dependencies": {
+    "async": "^1.5.2",
     "bot-utilities": "^2.5.0",
     "canvas-utilities": "^2.2.0",
     "color": "^0.11.1",
