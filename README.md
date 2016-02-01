@@ -25,6 +25,20 @@ please feel free to:
     your code after merging it, please don't be offended! it's only done in the
     spirit of making things modular & readable for future cat-face explorers)
 
+### Getting started
+
+```sh
+$ git clone https://github.com/beaugunderson/cat-snacks
+$ cd cat-snacks
+$ npm install
+$ npm start
+```
+
+To figure out how bezier curve math this [interactive curve tool][tool] can be
+helpful.
+
+[tool]: http://blogs.sitepointstatic.com/examples/tech/canvas-curves/bezier-curve.html
+
 ### How to add a new part
 
 Let's say you wanted to add tabby markings, you could accomplish that with
