@@ -12,8 +12,6 @@ module.exports = function (dimension, divisions, cb) {
   var spacingPx = 5;
   var catDimension = (dimension - (spacingPx * (divisions - 1))) / divisions;
 
-  console.log('catDimension', catDimension);
-
   function drawCatOnCanvas(row, column, buffer) {
     var unit = catDimension + spacingPx;
 
