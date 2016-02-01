@@ -13,8 +13,10 @@ function draw() {
   $('#cat-container').html('');
 
   if (gridChecked) {
+    $('#cat-container').addClass('grid');
     $('#cat-container').append(grid(DIMENSION, 5));
   } else {
+    $('#cat-container').removeClass('grid');
     $('#cat-container').append(cat(DIMENSION, controlPointsChecked));
   }
 }

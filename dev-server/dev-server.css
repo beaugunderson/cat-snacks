@@ -7,6 +7,10 @@
   border-radius: 15px;
 }
 
+#cat-container.grid > canvas {
+  border-radius: 0;
+}
+
 #another {
   font-size: 18pt;
   margin-top: 0.5em;
