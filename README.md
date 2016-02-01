@@ -27,7 +27,8 @@ please feel free to:
 
 ### How to add a new part
 
-Let's say you wanted to add tabby markings, you could accomplish that by:
+Let's say you wanted to add tabby markings, you could accomplish that with
+these steps:
 
 - make a new file for the drawing code: `./lib/tabby-markings.js`
 - put a function in `module.exports of that file that takes `ctx` and `options`
