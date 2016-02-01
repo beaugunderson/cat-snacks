@@ -8,11 +8,11 @@
   "dependencies": {
     "async": "^1.5.2",
     "bot-utilities": "^2.5.0",
-    "canvas-utilities": "^2.2.0",
+    "canvas-utilities": "^2.2.1",
     "color": "^0.11.1",
     "jquery": "^2.2.0",
     "lodash": "^4.1.0",
-    "twit": "^2.1.7"
+    "twit": "^2.2.1"
   },
   "devDependencies": {
     "budo": "^8.0.2"
