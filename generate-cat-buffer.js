@@ -3,10 +3,10 @@
 var Canvas = require('canvas-utilities').Canvas;
 var cat = require('./generate-cat');
 
-module.exports = function catBuffer(cb) {
-  var canvas = new Canvas(600, 600);
+module.exports = function catBuffer(dimension, drawControlPoints, cb) {
+  var canvas = new Canvas(dimension, dimension);
 
-  cat(canvas);
+  cat(canvas, dimension, drawControlPoints);
 
   canvas.toBuffer(cb);
 };

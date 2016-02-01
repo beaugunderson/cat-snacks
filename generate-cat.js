@@ -39,7 +39,12 @@ var BACKGROUND_COLORS = [
   'white'
 ];
 
-module.exports = function cat(canvas, drawControlPoints) {
+var HEAD_SHAPES = [
+  'ellipse',
+  'triangular'
+];
+
+module.exports = function (canvas, dimension, drawControlPoints) {
   var ctx = canvas.getContext('2d');
 
   // Math.seedrandom('meow');
@@ -53,6 +58,8 @@ module.exports = function cat(canvas, drawControlPoints) {
     height: canvas.height,
     headWidth: _.random(canvas.width * 0.3, canvas.width * 0.4),
     headHeight: _.random(canvas.height * 0.15, canvas.height * 0.275),
+    headShape: _.sample(HEAD_SHAPES),
+    headAngleFactor: _.random(0.75, 0.9),
     centerX: canvas.width / 2,
     centerY: canvas.height / 2,
     earFactorX: _.random(0.9, 1.15),
@@ -74,7 +81,12 @@ module.exports = function cat(canvas, drawControlPoints) {
     // whiskers
     droop: Math.random() < 0.5,
     whiskerFactorX: _.random(0.85, 1.01),
-    whiskerFactorY: _.random(0.85, 1.01)
+    whiskerFactorY: _.random(0.85, 1.01),
+
+    // I originally wrote all of this with the width/height of 600; therefore we
+    // need to scale all of the line widths, sizes, etc. to compensate for
+    // differing dimensions
+    scaleFactor: dimension / 600
   };
 
   options.eyeOffsetY = -options.headHeight * _.random(0.25, 0.35);
@@ -85,7 +97,7 @@ module.exports = function cat(canvas, drawControlPoints) {
 
   ctx.fillStyle = 'white';
   ctx.lineCap = 'round';
-  ctx.lineWidth = '8';
+  ctx.lineWidth = 8 * options.scaleFactor;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 

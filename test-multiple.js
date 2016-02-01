@@ -3,6 +3,10 @@
 var catGrid = require('./generate-grid.js');
 var fs = require('fs');
 
-catGrid(function (err, buffer) {
+console.log('generating...');
+
+catGrid(2048, 5, function (err, buffer) {
+  console.log('writing...');
+
   fs.writeFileSync('./output-grid.png', buffer);
 });

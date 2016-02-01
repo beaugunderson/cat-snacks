@@ -1,49 +1,45 @@
 'use strict';
 
+var async = require('async');
 var Canvas = require('canvas-utilities').Canvas;
 var Image = require('canvas').Image;
+var cat = require('./generate-cat-buffer.js');
 
-var cat = require('./generate-cat-buffer');
-
-// TODO get this from cat?
-var catWidth = 600;
-
-var howMany = 16;
-var perRow = 4;
-var spacingPx = 10;
-
-var perCol = howMany / perRow;
-var width = (catWidth * perRow) + (spacingPx * (perRow - 1));
-var height = (catWidth * perCol) + (spacingPx * (perCol - 1));
-
-function catGrid(canvas) {
+module.exports = function (dimension, divisions, cb) {
+  var canvas = new Canvas(dimension, dimension);
   var ctx = canvas.getContext('2d');
 
-  function drawCatOnCanvas(buffer, index) {
-    var col = index % perRow;
-    var row = Math.floor(index / perRow);
-    var unit = catWidth + spacingPx;
-    var x = spacingPx + (unit * col);
+  var spacingPx = 5;
+  var catDimension = (dimension - (spacingPx * (divisions - 1))) / divisions;
+
+  console.log('catDimension', catDimension);
+
+  function drawCatOnCanvas(row, column, buffer) {
+    var unit = catDimension + spacingPx;
+
+    var x = spacingPx + (unit * column);
     var y = spacingPx + (unit * row);
 
-    var img = new Image;
+    var img = new Image();
     img.src = buffer;
     ctx.drawImage(img, x, y);
   }
 
-  for (var i = 0; i < howMany; i++) {
-    (function(index) {
-      cat(function (err, buffer) {
-        drawCatOnCanvas(buffer, index);
-      });
-    })(i);
+  var coordinates = [];
+
+  for (var i = 0; i < divisions; i++) {
+    for (var j = 0; j < divisions; j++) {
+      coordinates.push([i, j]);
+    }
   }
-}
 
-module.exports = function (cb) {
-  var canvas = new Canvas(width, height);
+  async.eachSeries(coordinates, function (coordinate, cbEachSeries) {
+    cat(catDimension, false, function (err, buffer) {
+      drawCatOnCanvas(coordinate[0], coordinate[1], buffer);
 
-  catGrid(canvas);
-
-  canvas.toBuffer(cb);
+      cbEachSeries();
+    });
+  }, function () {
+    canvas.toBuffer(cb);
+  });
 };
