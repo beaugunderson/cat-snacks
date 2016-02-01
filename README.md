@@ -1,4 +1,4 @@
-## cat-snacks
+## cat-snacks 😸
 
 **It is an explicit goal of this project to be patient with and friendly to
 everyone participating!**
@@ -48,5 +48,9 @@ these steps:
 - different backgrounds (polka dots? gradients? stripes? chevrons? stars?)
 - reference images of cartoon cat faces for inspiration, maybe a `./reference`
   directory?
+- filters?
+  - ascii using [aalib.js](https://github.com/moriyoshi/aalib.js) or
+    [ascii](http://npm.im/ascii)?
+  - glitch mode
 
 ![a 5x5 grid of adorable cat faces](/examples/output-grid.png)
