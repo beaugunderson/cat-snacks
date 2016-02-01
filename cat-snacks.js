@@ -22,7 +22,12 @@ program
     // these functions accept different arguments but both accept a callback as
     // the last argument; here we create partials and pick one at random to
     // generate an image with
-    var catPartial = _.partial(cat, imageDimension, false);
+    function catPartial(cb) {
+      var canvas = cat(imageDimension);
+
+      canvas.toBuffer(cb);
+    }
+
     var gridPartial = _.partial(grid, imageDimension, _.sample([2, 3, 4, 5]));
     var generateFn = catPartial;
 

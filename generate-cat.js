@@ -45,7 +45,7 @@ var HEAD_SHAPES = [
   'triangular'
 ];
 
-module.exports = function (dimension, drawControlPoints, cb) {
+module.exports = function (dimension, drawControlPoints) {
   var canvas = new Canvas(dimension, dimension);
   var ctx = canvas.getContext('2d');
 
@@ -121,5 +121,5 @@ module.exports = function (dimension, drawControlPoints, cb) {
     bezierTo.points.forEach(p => controlPoint.apply(null, [ctx].concat(p)));
   }
 
-  canvas.toBuffer(cb);
+  return canvas;
 };

@@ -34,7 +34,9 @@ module.exports = function (dimension, divisions, cb) {
   }
 
   async.eachSeries(coordinates, function (coordinate, cbEachSeries) {
-    cat(catDimension, false, function (err, buffer) {
+    var catCanvas = cat(catDimension, false);
+
+    catCanvas.toBuffer(function (err, buffer) {
       drawCatOnCanvas(coordinate[0], coordinate[1], buffer);
 
       cbEachSeries();
