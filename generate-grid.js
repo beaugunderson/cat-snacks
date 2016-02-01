@@ -3,7 +3,7 @@
 var async = require('async');
 var Canvas = require('canvas-utilities').Canvas;
 var Image = require('canvas').Image;
-var cat = require('./generate-cat.js');
+var cat = require('./generate-cat-buffer.js');
 
 module.exports = function (dimension, divisions, cb) {
   var canvas = new Canvas(dimension, dimension);

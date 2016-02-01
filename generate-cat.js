@@ -1,6 +1,5 @@
 'use strict';
 
-var Canvas = require('canvas-utilities').Canvas;
 var _ = require('lodash');
 
 var background = require('./lib/background.js');
@@ -45,8 +44,7 @@ var HEAD_SHAPES = [
   'triangular'
 ];
 
-module.exports = function (dimension, drawControlPoints, cb) {
-  var canvas = new Canvas(dimension, dimension);
+module.exports = function (canvas, dimension, drawControlPoints) {
   var ctx = canvas.getContext('2d');
 
   // Math.seedrandom('meow');
@@ -120,6 +118,4 @@ module.exports = function (dimension, drawControlPoints, cb) {
   if (drawControlPoints) {
     bezierTo.points.forEach(p => controlPoint.apply(null, [ctx].concat(p)));
   }
-
-  canvas.toBuffer(cb);
-};
+}
