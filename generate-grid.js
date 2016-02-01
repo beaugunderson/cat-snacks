@@ -2,7 +2,6 @@
 
 var async = require('async');
 var Canvas = require('canvas-utilities').Canvas;
-var Image = require('canvas').Image;
 var cat = require('./generate-cat.js');
 
 module.exports = function (dimension, divisions, cb) {
@@ -12,15 +11,20 @@ module.exports = function (dimension, divisions, cb) {
   var spacingPx = 5;
   var catDimension = (dimension - (spacingPx * (divisions - 1))) / divisions;
 
-  function drawCatOnCanvas(row, column, buffer) {
+  function drawCatOnCanvas(row, column, bufferOrCanvas) {
     var unit = catDimension + spacingPx;
 
     var x = spacingPx + (unit * column);
     var y = spacingPx + (unit * row);
 
-    var img = new Image();
-    img.src = buffer;
-    ctx.drawImage(img, x, y);
+    if (bufferOrCanvas.nodeName === 'CANVAS') {
+      ctx.drawImage(bufferOrCanvas, x, y);
+    } else {
+      var img = new Canvas.Image();
+      img.src = bufferOrCanvas;
+
+      ctx.drawImage(img, x, y);
+    }
   }
 
   var coordinates = [];
@@ -31,7 +35,18 @@ module.exports = function (dimension, divisions, cb) {
     }
   }
 
-  async.eachSeries(coordinates, function (coordinate, cbEachSeries) {
+  // for the browser
+  if (!canvas.toBuffer) {
+    coordinates.forEach(function (coordinate) {
+      var catCanvas = cat(catDimension, false);
+
+      drawCatOnCanvas(coordinate[0], coordinate[1], catCanvas);
+    });
+
+    return canvas;
+  }
+
+  async.each(coordinates, function (coordinate, cbEachSeries) {
     var catCanvas = cat(catDimension, false);
 
     catCanvas.toBuffer(function (err, buffer) {

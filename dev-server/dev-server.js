@@ -1,15 +1,22 @@
 'use strict';
 
 var cat = require('../generate-cat.js');
+var grid = require('../generate-grid.js');
 var $ = require('jquery');
 
 var DIMENSION = 800;
 
 function draw() {
-  var controlPoints = $('#control-points').is(':checked');
+  var controlPointsChecked = $('#control-points').is(':checked');
+  var gridChecked = $('#grid').is(':checked');
 
   $('#cat-container').html('');
-  $('#cat-container').append(cat(DIMENSION, controlPoints));
+
+  if (gridChecked) {
+    $('#cat-container').append(grid(DIMENSION, 5));
+  } else {
+    $('#cat-container').append(cat(DIMENSION, controlPointsChecked));
+  }
 }
 
 $(function () {
@@ -17,4 +24,5 @@ $(function () {
 
   $('#another').click(draw);
   $('#control-points').click(draw);
+  $('#grid').click(draw);
 });
