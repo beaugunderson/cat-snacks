@@ -2,6 +2,7 @@
 
 var botUtilities = require('bot-utilities');
 var cat = require('./generate-cat.js');
+var grid = require('./generate-grid.js');
 var Twit = require('twit');
 var _ = require('lodash');
 
@@ -16,7 +17,21 @@ program
   .action(botUtilities.randomCommand(function () {
     var T = new Twit(botUtilities.getTwitterAuthFromEnv());
 
-    cat(function (err, buffer) {
+    var imageDimension = 1024;
+
+    // these functions accept different arguments but both accept a callback as
+    // the last argument; here we create partials and pick one at random to
+    // generate an image with
+    var catPartial = _.partial(cat, imageDimension, false);
+    var gridPartial = _.partial(grid, imageDimension, _.sample([2, 3, 4, 5]));
+    var generateFn = catPartial;
+
+    // 10% of posts can be a grid
+    if (_.random(0, 100) >= 90) {
+      generateFn = gridPartial;
+    }
+
+    generateFn(function (err, buffer) {
       T.updateWithMedia({status: ''}, buffer, function (updateError, response) {
         if (err) {
           return console.error('TUWM error', updateError, response.statusCode);
