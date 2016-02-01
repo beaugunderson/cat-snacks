@@ -38,6 +38,8 @@ Let's say you wanted to add tabby markings, you could accomplish that by:
   `./lib/head-markings.js` and call it where it makes sense to (in this case by
   adding it to the list of randomly-chosen facial marking functions)
 
+![a 5x5 grid of adorable cat faces](/examples/output-grid.png)
+
 ### Help wanted
 
 - more colors (or color sets, colors that work well together)

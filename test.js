@@ -3,6 +3,6 @@
 var cat = require('./generate-cat.js');
 var fs = require('fs');
 
-cat(function (err, buffer) {
+cat(1024, false, function (err, buffer) {
   fs.writeFileSync('./output.png', buffer);
 });
