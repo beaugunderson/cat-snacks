@@ -82,7 +82,12 @@ function cat(canvas, drawControlPoints) {
     // whiskers
     droop: Math.random() < 0.5,
     whiskerFactorX: _.random(0.85, 1.01),
-    whiskerFactorY: _.random(0.85, 1.01)
+    whiskerFactorY: _.random(0.85, 1.01),
+
+    // I originally wrote all of this with the width/height of 600; therefore we
+    // need to scale all of the line widths, sizes, etc. to compensate for
+    // differing dimensions
+    scaleFactor: dimension / 600
   };
 
   options.eyeOffsetY = -options.headHeight * _.random(0.25, 0.35);
@@ -93,7 +98,7 @@ function cat(canvas, drawControlPoints) {
 
   ctx.fillStyle = 'white';
   ctx.lineCap = 'round';
-  ctx.lineWidth = '8';
+  ctx.lineWidth = 8 * options.scaleFactor;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
