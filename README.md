@@ -34,8 +34,8 @@ $ npm install
 $ npm start
 ```
 
-To figure out how bezier curve math this [interactive curve tool][tool] can be
-helpful.
+To figure out how bezier curve math works this [interactive curve tool][tool]
+can be helpful.
 
 [tool]: http://blogs.sitepointstatic.com/examples/tech/canvas-curves/bezier-curve.html
 
