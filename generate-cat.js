@@ -97,6 +97,10 @@ module.exports = function (dimension, drawControlPoints) {
   options.mouthWidth = options.headWidth * _.random(0.25, 0.35);
   options.mouthHeight = options.headHeight * _.random(0.15, 0.35);
 
+  if (bezierTo.points) {
+    bezierTo.points = [];
+  }
+
   ctx.fillStyle = 'white';
   ctx.lineCap = 'round';
   ctx.lineWidth = 8 * options.scaleFactor;
@@ -118,7 +122,12 @@ module.exports = function (dimension, drawControlPoints) {
   background(ctx, options);
 
   if (drawControlPoints) {
+    ctx.save();
+    ctx.translate(options.centerX, options.centerY);
+
     bezierTo.points.forEach(p => controlPoint.apply(null, [ctx].concat(p)));
+
+    ctx.restore();
   }
 
   return canvas;

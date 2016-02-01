@@ -10,6 +10,7 @@
     "bot-utilities": "^2.5.0",
     "canvas-utilities": "^2.2.0",
     "color": "^0.11.1",
+    "jquery": "^2.2.0",
     "lodash": "^4.1.0",
     "twit": "^2.1.7"
   },
@@ -19,7 +20,7 @@
   "scripts": {
     "start": "node test.js && open output.png",
     "grid": "node test-multiple && open output-grid.png",
-    "dev": "budo dev.js --live"
+    "dev": "cd dev-server && budo dev-server.js --live --open"
   },
   "repository": {
     "type": "git",

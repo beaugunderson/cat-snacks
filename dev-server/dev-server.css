@@ -1,0 +1,14 @@
+* {
+  text-align: center;
+}
+
+#cat-container > canvas {
+  max-height: 85vh;
+  border-radius: 15px;
+}
+
+#another {
+  font-size: 18pt;
+  margin-top: 0.5em;
+  padding: 0.5em;
+}
