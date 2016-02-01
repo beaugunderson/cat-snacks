@@ -14,6 +14,9 @@ var mouth = require('./lib/mouth.js');
 var nose = require('./lib/nose.js');
 var whiskers = require('./lib/whiskers.js');
 
+// TODO: define sets of colors that look nice together (so you don't get a face
+// color that 's the same as the eye color, for example), or maybe pick based
+// on not having a contrast between colors that's too low?
 var HEAD_COLORS = [
   '#ffffff',
   '#cccccc',
@@ -22,13 +25,28 @@ var HEAD_COLORS = [
 ];
 
 var EYE_COLORS = [
-  //'#013391',
+  '#013391',
+  '#704E0C',
   '#000000',
-  //'#704E0C',
-  '#333333'
+  '#333333',
+  '#02779e'
 ];
 
-function cat(canvas, drawControlPoints) {
+var BACKGROUND_COLORS = [
+  '#75a480',
+  '#66757f',
+  '#999999',
+  '#cccccc',
+  'white'
+];
+
+var HEAD_SHAPES = [
+  'ellipse',
+  'triangular'
+];
+
+module.exports = function (dimension, drawControlPoints, cb) {
+  var canvas = new Canvas(dimension, dimension);
   var ctx = canvas.getContext('2d');
 
   // Math.seedrandom('meow');
@@ -37,23 +55,40 @@ function cat(canvas, drawControlPoints) {
   //_ = _.runInContext();
 
   var options = {
+    // dimensions
     width: canvas.width,
     height: canvas.height,
     headWidth: _.random(canvas.width * 0.3, canvas.width * 0.4),
     headHeight: _.random(canvas.height * 0.15, canvas.height * 0.275),
+    headShape: _.sample(HEAD_SHAPES),
+    headAngleFactor: _.random(0.75, 0.9),
     centerX: canvas.width / 2,
     centerY: canvas.height / 2,
     earFactorX: _.random(0.9, 1.15),
     earFactorY: _.random(0.9, 1.1),
-    tabbyFactorX: _.random(0.9, 1.2),
-    tabbyFactorY: _.random(0.9, 1.1),
+
+    // colors
     catColor: _.sample(HEAD_COLORS),
     eyeColor: _.sample(EYE_COLORS),
-    oddEyeProb: 0.25,
+    backgroundColor: _.sample(BACKGROUND_COLORS),
+
+    // eyes
+    oddEyePercentage: 15,
     oddEyeColor: _.sample(EYE_COLORS),
+
+    // markings
+    tabbyFactorX: _.random(0.9, 1.2),
+    tabbyFactorY: _.random(0.9, 1.1),
+
+    // whiskers
     droop: Math.random() < 0.5,
     whiskerFactorX: _.random(0.85, 1.01),
-    whiskerFactorY: _.random(0.85, 1.01)
+    whiskerFactorY: _.random(0.85, 1.01),
+
+    // I originally wrote all of this with the width/height of 600; therefore we
+    // need to scale all of the line widths, sizes, etc. to compensate for
+    // differing dimensions
+    scaleFactor: dimension / 600
   };
 
   options.eyeOffsetY = -options.headHeight * _.random(0.25, 0.35);
@@ -64,7 +99,7 @@ function cat(canvas, drawControlPoints) {
 
   ctx.fillStyle = 'white';
   ctx.lineCap = 'round';
-  ctx.lineWidth = '8';
+  ctx.lineWidth = 8 * options.scaleFactor;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -85,12 +120,6 @@ function cat(canvas, drawControlPoints) {
   if (drawControlPoints) {
     bezierTo.points.forEach(p => controlPoint.apply(null, [ctx].concat(p)));
   }
-}
-
-module.exports = function (cb) {
-  var canvas = new Canvas(600, 600);
-
-  cat(canvas);
 
   canvas.toBuffer(cb);
 };
