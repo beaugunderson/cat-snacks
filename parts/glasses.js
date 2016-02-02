@@ -25,14 +25,14 @@ module.exports = function (ctx, options) {
   // left side
   ctx.beginPath();
   ctx.rect(-options.headWidth * 0.4 - xRad, options.eyeOffsetY - yRad, xRad * 2, yRad * 2);
-  ctx.stroke();
   if (isWearingSunglassesAtNight) ctx.fill();
+  ctx.stroke();
 
   // right side
   ctx.beginPath();
   ctx.rect(options.headWidth * 0.4 - xRad, options.eyeOffsetY - yRad, xRad * 2, yRad * 2);
-  ctx.stroke();
   if (isWearingSunglassesAtNight) ctx.fill();
+  ctx.stroke();
 
   // the bridge
   // TODO: sometimes draw a bezier curve from edge of one rect to the other... :<
