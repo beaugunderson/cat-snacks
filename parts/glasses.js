@@ -18,7 +18,7 @@ module.exports = function (ctx, options) {
   var glassesTint = _.sample([[0, 0, 0], [22, 55, 33], [40, 80, 60], [255, 105, 180], [25, 50, 13], [239, 89, 123], [243, 243, 21], [139, 69, 19], [10, 15, 5]])
 
   // does node have string interps yet? no? ok, fine, TODO make this less awful.
-  ctx.fillStyle = "rgba(" + glassesTint[0] + ", " + glassesTint[1] + ", " + glassesTint[2] + ", " + glassesTintLevel + ")";
+  ctx.fillStyle = `rgba(${glassesTint[0]}, ${glassesTint[1]}, ${glassesTint[2]}, ${glassesTintLevel})`;
   ctx.lineWidth = rimSize * options.scaleFactor;
   ctx.strokeStyle = rimColor;
 
