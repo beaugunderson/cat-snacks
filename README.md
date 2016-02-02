@@ -67,7 +67,6 @@ these steps:
 - different mouths, eyes, noses, stripes, fur patterns
   - notched ears
   - pointy ears
-  - triangle noses
 - an 8-bit version
 - different backgrounds (polka dots? gradients? stripes? chevrons? stars?)
 - reference images of cartoon cat faces for inspiration, maybe a `./reference`
