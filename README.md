@@ -21,8 +21,10 @@ please feel free to:
 #### Open issues with suggestions
 
 - even if you can't or don't want to code!
-- you could describe your idea, or add a sketch or drawing, or link to a
-  reference image of something you think should be added
+- you could...
+  - describe your idea
+  - add a sketch or drawing
+  - link to a reference image of something you think should be added
 
 #### Send pull requests
 
@@ -36,7 +38,7 @@ please feel free to:
 $ git clone https://github.com/beaugunderson/cat-snacks
 $ cd cat-snacks
 $ npm install
-$ npm start
+$ npm start # this starts a browser version with live reload
 ```
 
 To figure out how bezier curve math works this [interactive curve tool][tool]
@@ -50,8 +52,8 @@ Let's say you wanted to add tabby markings, you could accomplish that with
 these steps:
 
 - make a new file for the drawing code: `./parts/tabby-markings.js`
-- put a function in `module.exports of that file that takes `ctx` and `options`
-  parameters
+- put a function in `module.exports` of that file that takes `ctx` and
+  `options` parameters
 - add options to `generate-cat.js` if it makes sense to (for example maybe you
   want to be able to expose some of the parameters for tweaking)
 - import your module from the module that will call it, in this case
