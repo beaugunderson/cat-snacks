@@ -13,17 +13,22 @@ cat faces!
 First, take a look at the [code of conduct](CODE_OF_CONDUCT.md)! After that,
 please feel free to:
 
-- open issues with questions
-  - I will be very nice & patient! it is totally acceptable to ask for tech
-    support via creating an issue here
-- open issues with suggestions
-  - even if you can't or don't want to code!
-  - you could describe your idea, or add a sketch or drawing, or link to a
-    reference image of something you think should be added
-- send pull requests
-  - these don't have to be perfect! (the caveat being, if I make changes to
-    your code after merging it, please don't be offended! it's only done in the
-    spirit of making things modular & readable for future cat-face explorers)
+#### Open issues with questions
+
+- you will be met with patience and kindness!
+- it is totally acceptable to ask for tech support via creating an issue here
+
+#### Open issues with suggestions
+
+- even if you can't or don't want to code!
+- you could describe your idea, or add a sketch or drawing, or link to a
+  reference image of something you think should be added
+
+#### Send pull requests
+
+- these don't have to be perfect! (the caveat being, if I make changes to your
+  code after merging it, please don't be offended! it's only done in the spirit
+  of making things modular & readable for future cat-face explorers)
 
 ### Getting started
 
@@ -57,7 +62,10 @@ these steps:
 
 - more colors (or color sets, colors that work well together)
 - accessories (glasses, snacks, toys, hats)
-- different mouths
+- different mouths, eyes, noses, stripes, fur patterns
+  - notched ears
+  - pointy ears
+  - triangle noses
 - an 8-bit version
 - different backgrounds (polka dots? gradients? stripes? chevrons? stars?)
 - reference images of cartoon cat faces for inspiration, maybe a `./reference`
