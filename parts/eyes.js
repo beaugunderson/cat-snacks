@@ -15,13 +15,11 @@ module.exports = function (ctx, options) {
     ctx.fillStyle = options.eyeColor;
   }
 
-  var eyeSize = options.headWidth * _.random(0.065, 0.08);
-
   // left eye
   ctx.ellipse(-options.headWidth * 0.4,
               options.eyeOffsetY,
-              eyeSize,
-              eyeSize,
+              options.eyeSize,
+              options.eyeSize,
               0, 0, 2 * Math.PI);
 
   ctx.fill();
@@ -31,8 +29,8 @@ module.exports = function (ctx, options) {
   // right eye
   ctx.ellipse(options.headWidth * 0.4,
               options.eyeOffsetY,
-              eyeSize,
-              eyeSize,
+              options.eyeSize,
+              options.eyeSize,
               Math.PI / 2, 0, 2 * Math.PI);
 
   ctx.fillStyle = options.eyeColor;
