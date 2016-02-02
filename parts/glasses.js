@@ -19,7 +19,7 @@ module.exports = function (ctx, options) {
 
   // does node have string interps yet? no? ok, fine, TODO make this less awful.
   ctx.fillStyle = "rgba(" + glassesTint[0] + ", " + glassesTint[1] + ", " + glassesTint[2] + ", " + glassesTintLevel + ")";
-  ctx.lineWidth = rimSize;
+  ctx.lineWidth = rimSize * options.scaleFactor;
   ctx.strokeStyle = rimColor;
 
   // left side
