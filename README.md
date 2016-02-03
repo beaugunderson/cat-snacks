@@ -5,8 +5,14 @@ everyone participating!**
 
 [@catsnacks](https://twitter.com/catsnacks) is a collaborative Twitter bot &
 exists exists to explore the universe of adorable cat faces. You can help
-[@catsnacks](https://twitter.com/catsnacks) do this by adding new ways to draw
-cat faces!
+@catsnacks do this by adding new ways to draw cat faces!
+
+*Note: the first iteration of @catsnacks had a very [Neko Atsume][neko] feel to
+it (I was playing and enjoying the game around the time I made the original
+prototype) but I want to expand way beyond that aesthetic to encompass all
+kinds of cartoon kitties.*
+
+[neko]: https://itunes.apple.com/us/app/neko-atsume-kitty-collector/id923917775?mt=8
 
 ### How to contribute
 
