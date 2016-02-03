@@ -12,6 +12,7 @@
     "color": "^0.11.1",
     "jquery": "^2.2.0",
     "lodash": "^4.1.0",
+    "poisson-disc-sampler": "^1.1.0",
     "twit": "^2.2.1"
   },
   "devDependencies": {
