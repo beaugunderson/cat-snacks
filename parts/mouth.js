@@ -3,13 +3,20 @@
 var bezierTo = require('../lib/bezier-to.js');
 var _ = require('lodash');
 
-module.exports = function (ctx, options) {
-  ctx.save();
+// TODO: could use some tweaking
+function detachedSmile(ctx, options) {
+  var startY = options.mouthHeight + _.random(1.1, 1.2);
 
-  ctx.translate(options.centerX, options.centerY);
+  bezierTo(
+    ctx,
+    0 - options.mouthWidth / _.random(1.0, 3.0),
+      startY + options.mouthHeight * 0.5,
+    options.mouthWidth * 0.25, startY + options.mouthHeight,
+    options.mouthWidth * 0.75, startY + options.mouthHeight,
+    options.mouthWidth * 1.1, startY * 1.05);
+}
 
-  ctx.beginPath();
-
+function splitMouth(ctx, options) {
   var dropMouthOffset = 0;
 
   if (_.random(0, 100) >= 50) {
@@ -32,6 +39,19 @@ module.exports = function (ctx, options) {
 
   side(-1);
   side(1);
+}
+
+module.exports = function (ctx, options) {
+  ctx.save();
+
+  ctx.translate(options.centerX, options.centerY);
+
+  ctx.beginPath();
+
+  _.sample([
+    splitMouth,
+    detachedSmile
+  ])(ctx, options);
 
   ctx.stroke();
 
