@@ -68,7 +68,7 @@ these steps:
   - notched ears
   - pointy ears
 - an 8-bit version
-- different backgrounds (polka dots? gradients? stripes? chevrons? stars?)
+- different backgrounds (gradients? stripes? chevrons?)
 - reference images of cartoon cat faces for inspiration, maybe a `./reference`
   directory?
 - filters?
