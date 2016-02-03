@@ -7,33 +7,30 @@ module.exports = function (ctx, options) {
 
   ctx.translate(options.centerX, options.centerY);
 
-  ctx.beginPath();
-
   if (_.random(0, 100) <= options.oddEyePercentage) {
     ctx.fillStyle = options.oddEyeColor;
   } else {
     ctx.fillStyle = options.eyeColor;
   }
 
-  // left eye
-  ctx.ellipse(-options.headWidth * 0.4,
-              options.eyeOffsetY,
-              options.eyeSize,
-              options.eyeSize,
-              0, 0, 2 * Math.PI);
+  function side(offset) {
+    ctx.beginPath();
+
+    ctx.ellipse(offset * options.headWidth * 0.4,
+                options.eyeOffsetY,
+                options.eyeSize,
+                options.eyeSize,
+                0, 0, 2 * Math.PI);
+  }
+
+  side(-1);
 
   ctx.fill();
 
-  ctx.beginPath();
-
-  // right eye
-  ctx.ellipse(options.headWidth * 0.4,
-              options.eyeOffsetY,
-              options.eyeSize,
-              options.eyeSize,
-              Math.PI / 2, 0, 2 * Math.PI);
-
   ctx.fillStyle = options.eyeColor;
+
+  side(1);
+
   ctx.fill();
 
   ctx.restore();
