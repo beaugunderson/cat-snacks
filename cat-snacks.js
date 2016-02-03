@@ -14,7 +14,8 @@ program
   .command('tweet')
   .description('Generate and tweet a beautiful cat')
   .option('-r, --random', 'only post a percentage of the time')
-  .action(botUtilities.randomCommand(function () {
+  .option('-g, --grid <n>', 'force a grid tweet', parseInt)
+  .action(botUtilities.randomCommand(function (options) {
     var T = new Twit(botUtilities.getTwitterAuthFromEnv());
 
     var imageDimension = 1024;
@@ -28,11 +29,12 @@ program
       canvas.toBuffer(cb);
     }
 
-    var gridPartial = _.partial(grid, imageDimension, _.sample([2, 3, 4, 5]));
+    var gridPartial = _.partial(grid, imageDimension,
+                                options.grid || _.sample([2, 3, 4, 5]));
     var generateFn = catPartial;
 
     // 10% of posts can be a grid
-    if (_.random(0, 100) >= 90) {
+    if (_.random(0, 100) >= 90 || options.grid > 0) {
       generateFn = gridPartial;
     }
 
