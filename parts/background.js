@@ -99,6 +99,8 @@ function dotBackground(ctx, options) {
 function circleBackground(ctx, options) {
   ctx.fillStyle = contrastColor(options.backgroundColor);
 
+  ctx.beginPath();
+
   ctx.ellipse(options.centerX, options.centerY,
               options.width / 2.1, options.height / 2.1,
               0, 0, 2 * Math.PI, false);
