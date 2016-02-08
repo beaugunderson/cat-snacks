@@ -17,7 +17,8 @@ function draw() {
     $('#cat-container').append(grid(DIMENSION, 5));
   } else {
     $('#cat-container').removeClass('grid');
-    $('#cat-container').append(cat(DIMENSION, controlPointsChecked));
+    $('#cat-container').append(cat(DIMENSION,
+      {dragControlPoints: controlPointsChecked}));
   }
 }
 
