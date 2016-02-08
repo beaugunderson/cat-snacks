@@ -69,11 +69,9 @@ these steps:
 ### Help wanted!
 
 - more colors (or color sets, colors that work well together)
-- accessories (glasses, snacks, toys, hats)
+- accessories (snacks, toys, hats)
 - different mouths, eyes, noses, stripes, fur patterns
   - notched ears
-  - pointy ears
-- an 8-bit version
 - different backgrounds (gradients? stripes? chevrons?)
 - reference images of cartoon cat faces for inspiration, maybe a `./reference`
   directory?
