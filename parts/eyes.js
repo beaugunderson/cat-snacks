@@ -16,11 +16,34 @@ module.exports = function (ctx, options) {
   function side(offset) {
     ctx.beginPath();
 
+    if (options.closedEyes) {
+        ctx.fillStyle = 'black';
+          closedEye(offset);
+    } else {
+        openEye(offset);
+    }
+  }
+
+  function openEye(offset) {
     ctx.ellipse(offset * options.headWidth * 0.4,
                 options.eyeOffsetY,
                 options.eyeSize,
                 options.eyeSize,
                 0, 0, 2 * Math.PI);
+  }
+
+  function closedEye(offset) {
+    var eyeX = offset * options.headWidth * 0.5;
+    var eyeWidth = options.eyeSize * 3;
+
+    if (offset == 1) {
+      eyeX -= eyeWidth;
+    }
+
+    ctx.rect(eyeX,
+             options.eyeOffsetY,
+             eyeWidth,
+             options.eyeSize / 2);
   }
 
   side(-1);
