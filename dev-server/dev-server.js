@@ -14,11 +14,12 @@ function draw() {
 
   if (gridChecked) {
     $('#cat-container').addClass('grid');
-    $('#cat-container').append(grid(DIMENSION, 5));
+    $('#cat-container').append(grid(DIMENSION, 5,
+      {drawControlPoints: controlPointsChecked}));
   } else {
     $('#cat-container').removeClass('grid');
     $('#cat-container').append(cat(DIMENSION,
-      {dragControlPoints: controlPointsChecked}));
+      {drawControlPoints: controlPointsChecked}));
   }
 }
 
