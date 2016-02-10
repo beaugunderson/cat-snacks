@@ -17,10 +17,9 @@ module.exports = function (ctx, options) {
     ctx.beginPath();
 
     if (options.closedEyes) {
-        ctx.fillStyle = 'black';
-          closedEye(offset);
+      closedEye(offset);
     } else {
-        openEye(offset);
+      openEye(offset);
     }
   }
 
@@ -39,6 +38,8 @@ module.exports = function (ctx, options) {
     if (offset == 1) {
       eyeX -= eyeWidth;
     }
+
+    ctx.fillStyle = 'black';
 
     ctx.rect(eyeX,
              options.eyeOffsetY,
