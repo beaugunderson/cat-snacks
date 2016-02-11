@@ -35,8 +35,8 @@ please feel free to:
 #### Send pull requests
 
 - these don't have to be perfect! (the caveat being, if I make changes to your
-  code after merging it, please don't be offended! it's only done in the spirit
-  of making things modular & readable for future cat-face explorers)
+  code after merging it, please don't be sad! it's only done in the spirit of
+  making things modular & readable for future cat-face explorers)
 
 ### Getting started
 
