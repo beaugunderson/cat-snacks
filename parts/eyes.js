@@ -20,7 +20,7 @@ module.exports = function (ctx) {
   function side(offset) {
     ctx.beginPath();
 
-    if (closedEyes) {
+    if (closedEyes && !accessories) {
       closedEye(offset);
     } else {
       openEye(offset);
