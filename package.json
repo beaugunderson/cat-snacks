@@ -27,8 +27,8 @@
     "tweet": "foreman start tweet",
     "tweet-grid": "foreman start grid",
     "tweet-random": "foreman start random",
-    "single": "cd test && node test.js && open output.png",
-    "grid": "cd test && node test-grid.js && open output-grid.png",
+    "single": "cd test && babel-node test.js && open output.png",
+    "grid": "cd test && babel-node test-grid.js && open output-grid.png",
     "start": "cd dev-server && budo dev-server.js --live --open -- -t babelify"
   },
   "repository": {
