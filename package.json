@@ -30,7 +30,12 @@
     "tweet-random": "foreman start random",
     "single": "cd test && babel-node test.js && open output.png",
     "grid": "cd test && babel-node test-grid.js && open output-grid.png",
-    "start": "cd dev-server && budo dev-server.js --live --open -- -t babelify"
+    "start": "cd dev-server && budo dev-server.js --live --open -- -t babelify",
+    "start:extension": "budo extension/index.js --dir extension --live",
+    "clean:extension": "rimraf extension-dist",
+    "copy:extension": "cp -r extension extension-dist",
+    "build:extension": "browserify extension/index -o extension-dist/index.js",
+    "dist:extension": "npm run clean:extension && npm run copy:extension && npm run build:extension"
   },
   "repository": {
     "type": "git",
