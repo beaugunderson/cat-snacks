@@ -2,3 +2,5 @@ output*.png
 .env
 node_modules
 .DS_Store
+extension-dist/
+
