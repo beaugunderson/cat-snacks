@@ -21,7 +21,8 @@
     "twit": "^2.2.2"
   },
   "devDependencies": {
-    "budo": "^8.0.4"
+    "budo": "^8.0.4",
+    "rimraf": "^2.5.2"
   },
   "scripts": {
     "tweet": "foreman start tweet",
