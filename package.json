@@ -12,7 +12,7 @@
     "bot-utilities": "^2.6.0",
     "canvas-utilities": "^2.3.0",
     "color": "^3.1.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "lodash": "^4.17.15",
     "poisson-disc-sampler": "^1.1.0",
     "twit": "^2.2.11"
