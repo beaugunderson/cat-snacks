@@ -7,7 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.9.2",
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "babelify": "^10.0.0",
     "bot-utilities": "^2.6.0",
     "canvas-utilities": "^2.3.0",
