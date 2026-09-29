@@ -229,6 +229,39 @@ describe('face part geometry', () => {
   });
 });
 
+describe('silhouettes', () => {
+  // every style that paints the cat's body, except pixel (too coarse to sample) and the collages
+  const painted = catalog.STYLES.filter(s => !['pixel', 'cubist', 'popart'].includes(s));
+
+  // average luminance of a 7x7 window around a scene point
+  function tone(canvas, frame, [sx, sy]) {
+    const x = Math.round(frame.x + frame.k * (sx - frame.cx));
+    const y = Math.round(frame.y + frame.k * (sy - frame.cy));
+    const d = canvas.getContext('2d').getImageData(x - 3, y - 3, 7, 7).data;
+    let sum = 0;
+    for (let i = 0; i < d.length; i += 4) sum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+    return sum / (d.length / 4) / 255;
+  }
+
+  test.each(painted)('%s: no ear edge shows inside the head', style => {
+    const g = createGenome('silhouette', {
+      style, fur: '#c9a27e', patterns: [], accessories: [], effects: [], background: 'solid',
+      earShape: 'pointy', earInsides: false, whiskerKind: 'none', headShape: 'squircle', headN: 3,
+      // keep the eyes low and apart so the forehead sample is open fur in every style
+      eyeY: 0.05, eyeSpacing: 0.42,
+    });
+    const scene = buildScene(g);
+    const ear = scene.anchors.ears[1];
+    const anchor = ear.outline.at(-1);
+    // a point on the ear's closing edge, which lies inside the head, and a point
+    // on open forehead between the ears: both should just be fur
+    const edge = [(ear.inner[0] + anchor[0]) / 2, (ear.inner[1] + anchor[1]) / 2];
+    const deeper = [edge[0] * 0.35, edge[1] * 0.9];
+    const canvas = renderCat(g, {size: 600});
+    expect(Math.abs(tone(canvas, scene.frame, edge) - tone(canvas, scene.frame, deeper))).toBeLessThan(0.08);
+  });
+});
+
 describe('neon', () => {
   test('draws the head and ears as one outline: no ear tube inside the head', () => {
     const g = createGenome('neon-ears', {

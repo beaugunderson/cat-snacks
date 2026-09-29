@@ -1,6 +1,6 @@
 import {luminance} from '../color.js';
 import {bounds, deform} from '../geom.js';
-import {drawLayers, paintText, trace} from './paint.js';
+import {drawLayers, outsideOthers, paintText, trace} from './paint.js';
 import {hatch, roughStroke} from './marks.js';
 
 // Styles that imitate a hand and a medium: marker, chalk, carved wood, paint.
@@ -36,12 +36,8 @@ function sketchPainter(g, env, {ink, strokeWidth, passes, amount, fillSpacing, f
         c.fillStyle = g.bgColor;
         c.fill();
       }
-      for (const s of body) {
-        scribble(c, s.polys, s.fill);
-      }
-      for (const s of body) {
-        outline(c, s.polys, true, ink, strokeWidth, true);
-      }
+      body.forEach((s, i) => outsideOthers(c, body, i, () => scribble(c, s.polys, s.fill), {laterOnly: true}));
+      body.forEach((s, i) => outsideOthers(c, body, i, () => outline(c, s.polys, true, ink, strokeWidth, true)));
     },
     shape(c, s, layer) {
       if (s.role === 'text') {
@@ -117,12 +113,9 @@ export const woodcut = {
           c.fillStyle = paper;
           c.fill();
         }
-        for (const s of body) {
-          cut(c, s, 0.7);
-        }
-        for (const s of body) {
-          roughStroke(c, s.polys, true, {rng, color: ink, width: 6, amount: 1, passes: 1, spacing: 10});
-        }
+        body.forEach((s, i) => outsideOthers(c, body, i, () => cut(c, s, 0.7), {laterOnly: true}));
+        body.forEach((s, i) => outsideOthers(c, body, i, () =>
+          roughStroke(c, s.polys, true, {rng, color: ink, width: 6, amount: 1, passes: 1, spacing: 10})));
       },
       shape(c, s, layer) {
         if (s.role === 'text') {
@@ -182,12 +175,9 @@ export const watercolor = {
 
     drawLayers(ctx, scene, {
       body(c, body) {
-        for (const s of body) {
-          wash(c, s, 1.2);
-        }
-        for (const s of body) {
-          roughStroke(c, s.polys, true, {rng, color: ink, width: 2.2, amount: 1, passes: 1, alpha: 0.8, spacing: 12});
-        }
+        body.forEach((s, i) => outsideOthers(c, body, i, () => wash(c, s, 1.2), {laterOnly: true}));
+        body.forEach((s, i) => outsideOthers(c, body, i, () =>
+          roughStroke(c, s.polys, true, {rng, color: ink, width: 2.2, amount: 1, passes: 1, alpha: 0.8, spacing: 12})));
       },
       shape(c, s, layer) {
         if (s.role === 'text') {

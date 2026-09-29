@@ -111,6 +111,30 @@ export function paintBody(ctx, body, {outline = true, widthScale = 1, fill} = {}
   ctx.restore();
 }
 
+// For styles that paint each body part themselves (rough, hatched or inked
+// lines): run `draw` with the canvas clipped to everything outside the other
+// body parts, so an ear's base never shows through the head and the outlines
+// join into one silhouette. Fills pass `laterOnly`, which skips just the parts
+// painted on top (the head comes last), so the ear-head overlap still gets fur.
+export function outsideOthers(ctx, body, index, draw, {laterOnly = false} = {}) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(-2000, -2000, 4000, 4000);
+
+  body.forEach((s, i) => {
+    if (i === index || (laterOnly && i < index)) return;
+    for (const poly of s.polys) {
+      ctx.moveTo(poly[0][0], poly[0][1]);
+      for (let k = 1; k < poly.length; k++) ctx.lineTo(poly[k][0], poly[k][1]);
+      ctx.closePath();
+    }
+  });
+
+  ctx.clip('evenodd');
+  draw();
+  ctx.restore();
+}
+
 // Walk the layers in order. The painter decides how each shape looks;
 // markings are always clipped to the silhouette.
 export function drawLayers(ctx, scene, painter = {}) {

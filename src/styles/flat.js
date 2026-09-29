@@ -1,7 +1,7 @@
 import {darken, lighten, luminance, rgba} from '../color.js';
-import {bounds, ellipse} from '../geom.js';
+import {bounds, ellipse, normalizeWinding} from '../geom.js';
 import {allShapes} from '../scene.js';
-import {applyFrame, clipTo, drawLayers, paintBody, paintShape, paintText, trace} from './paint.js';
+import {applyFrame, clipTo, drawLayers, outsideOthers, paintBody, paintShape, paintText, trace} from './paint.js';
 import {hatch} from './marks.js';
 
 // Styles that paint the shapes more or less directly: fills and strokes with
@@ -240,14 +240,11 @@ export const blueprint = {
 
     drawLayers(ctx, scene, {
       body(c, body) {
-        for (const s of body) {
-          trace(c, s.polys, true);
-          c.fillStyle = rgba('#ffffff', 0.06);
-          c.fill();
-        }
-        for (const s of body) {
-          paintShape(c, s, {fill: null, stroke: ink, width: 3});
-        }
+        // one translucent fill for the whole silhouette, so overlaps don't stack
+        trace(c, body.flatMap(s => s.polys.map(normalizeWinding)), true);
+        c.fillStyle = rgba('#ffffff', 0.06);
+        c.fill();
+        body.forEach((s, i) => outsideOthers(c, body, i, () => paintShape(c, s, {fill: null, stroke: ink, width: 3})));
       },
       shape(c, s, layer) {
         if (s.role === 'text') {
