@@ -1,5 +1,5 @@
 import {darken, lighten, rgba, shiftHue} from './color.js';
-import {TAU, circle, heart, poisson, star} from './geom.js';
+import {TAU, circle, heart, poisson, roundRect, star} from './geom.js';
 import {trace} from './styles/paint.js';
 
 // Backgrounds paint the full 600x600 design space behind the cat.
@@ -373,8 +373,40 @@ const BACKGROUNDS = {
       ctx.stroke();
     }
 
+    const ledge = SIZE - 18;
     ctx.fillStyle = '#6b4f2a';
-    ctx.fillRect(0, SIZE - 18, SIZE, 18);
+    ctx.fillRect(0, ledge, SIZE, 18);
+    ctx.fillStyle = '#86653a';
+    ctx.fillRect(0, ledge, SIZE, 3);
+
+    // a stick of chalk (sometimes with a worn-down stub) resting on the ledge,
+    // off to one side so the cat's chin doesn't cover it
+    const side = rng.sign();
+    const sticks = rng.chance(0.4) ? [rng.float(48, 64), rng.float(18, 28)] : [rng.float(48, 64)];
+    let x = side > 0 ? rng.float(390, 470) : rng.float(60, 140);
+
+    for (const length of sticks) {
+      const color = rng.pick(['#f4f1ea', '#f4f1ea', '#f7d8e0', '#fff3b0', '#cde7f0']);
+      const h = 11;
+      const y = ledge - h + 1;
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+      trace(ctx, [roundRect(x + 2, y + 3, length, h, h / 2)], true);
+      ctx.fill();
+      ctx.fillStyle = color;
+      trace(ctx, [roundRect(x, y, length, h, h / 2)], true);
+      ctx.fill();
+      // a darker worn end and a highlight along the top
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
+      trace(ctx, [roundRect(x + length - 7, y, 7, h, h / 2)], true);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.fillRect(x + h / 2, y + 2, length - h, 2);
+      ctx.restore();
+
+      x += length + rng.float(8, 16);
+    }
   },
 
   blueprint(ctx, g) {
