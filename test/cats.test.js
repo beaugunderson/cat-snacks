@@ -9,6 +9,7 @@ import {EYE_RADIUS} from '../src/parts/face.js';
 import {PATTERN_NAMES} from '../src/parts/markings.js';
 import {contrast, toHex} from '../src/color.js';
 import {Rng} from '../src/rng.js';
+import {pointInPoly} from '../src/geom.js';
 import {buildScene} from '../src/scene.js';
 import {STYLES} from '../src/styles/index.js';
 import {STYLE_META} from '../src/styles/meta.js';
@@ -148,6 +149,101 @@ describe('dither', () => {
       expect(light[1]).toBeLessThan(light[2]);
       expect(light[2]).toBeLessThan(light[3]);
     }
+  });
+});
+
+describe('face part geometry', () => {
+  const all = s => s.polys.flat();
+
+  // y of the lowest mouth line directly above or below x (the lip), or null
+  function lipAt(lines, x) {
+    let best = null;
+    for (const poly of lines.flatMap(s => s.polys)) {
+      for (let i = 1; i < poly.length; i++) {
+        const [x1, y1] = poly[i - 1];
+        const [x2, y2] = poly[i];
+        if ((x1 - x) * (x2 - x) <= 0 && x1 !== x2) {
+          const y = y1 + ((x - x1) / (x2 - x1)) * (y2 - y1);
+          best = best == null ? y : Math.max(best, y);
+        }
+      }
+    }
+    return best;
+  }
+
+  test.each([['blep', 'tongue'], ['fangs', 'teeth']])('%s: the %s hangs below the lip, never above it', (mouthKind, role) => {
+    for (const seed of ['p0', 'p1', 'p2', 'p3', 'p4', 'p5']) {
+      const face = buildScene(createGenome(seed, {mouthKind, accessories: []})).face;
+      const lines = face.filter(s => s.role === 'mouth');
+      const parts = face.filter(s => s.role === role);
+      expect(parts.length).toBeGreaterThan(0);
+
+      for (const [x, y] of parts.flatMap(all)) {
+        const lip = lipAt(lines, x);
+        // half the lip's line width of overlap is fine; anything more pokes out above it
+        if (lip != null) expect(y).toBeGreaterThanOrEqual(lip - 3.5);
+      }
+    }
+  });
+
+  test('meow: the tongue stays inside the open mouth', () => {
+    for (const seed of ['p0', 'p1', 'p2', 'p3', 'p4', 'p5']) {
+      const face = buildScene(createGenome(seed, {mouthKind: 'meow', accessories: []})).face;
+      const mouth = face.find(s => s.role === 'mouthFill').polys[0];
+      const tongue = face.find(s => s.role === 'tongue');
+      for (const p of all(tongue)) {
+        expect(pointInPoly(p, mouth)).toBe(true);
+      }
+    }
+  });
+
+  test('messy whiskers fan out without crossing each other', () => {
+    const cross = ([a, b], [c, d]) => {
+      const side = (p, q, r) => Math.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]));
+      return side(a, b, c) * side(a, b, d) < 0 && side(c, d, a) * side(c, d, b) < 0;
+    };
+
+    for (let i = 0; i < 40; i++) {
+      const whisker = buildScene(createGenome(`messy-${i}`, {whiskerKind: 'messy'})).face.find(s => s.role === 'whisker');
+      for (const side of [-1, 1]) {
+        const mine = whisker.polys.filter(p => Math.sign(p[0][0]) === side).map(p => [p[0], p[p.length - 1]]);
+        for (let a = 0; a < mine.length; a++) {
+          for (let b = a + 1; b < mine.length; b++) {
+            expect(cross(mine[a], mine[b])).toBe(false);
+          }
+        }
+      }
+    }
+  });
+
+  test('whisker pads sit beside the mouth, not on it', () => {
+    for (let i = 0; i < 20; i++) {
+      const face = buildScene(createGenome(`pads-${i}`, {whiskerKind: 'pads', mouthKind: 'split'})).face;
+      const reach = Math.max(...face.filter(s => s.role === 'mouth').flatMap(all).map(([x]) => Math.abs(x)));
+      const pads = face.find(s => s.role === 'whisker');
+      for (const dot of pads.polys) {
+        const inner = Math.min(...dot.map(([x]) => Math.abs(x)));
+        expect(inner).toBeGreaterThan(reach);
+      }
+    }
+  });
+});
+
+describe('neon', () => {
+  test('draws the head and ears as one outline: no ear tube inside the head', () => {
+    const g = createGenome('neon-ears', {
+      style: 'neon', patterns: [], accessories: [], effects: [], background: 'solid', bgColor: '#000000',
+      earShape: 'pointy', earInsides: false, whiskerKind: 'none', headShape: 'ellipse',
+    });
+    const scene = buildScene(g);
+    const {frame} = scene;
+    const ear = scene.anchors.ears[1];
+    // the ear's closing edge, which runs from its inner base down inside the head
+    const inside = [(ear.inner[0] + ear.outline.at(-1)[0]) / 2, (ear.inner[1] + ear.outline.at(-1)[1]) / 2];
+    const x = Math.round(frame.x + frame.k * (inside[0] - frame.cx));
+    const y = Math.round(frame.y + frame.k * (inside[1] - frame.cy));
+    const [r, gg, b] = pixel(renderCat(g, {size: 600}), x, y);
+    expect(r + gg + b).toBeLessThan(150);
   });
 });
 

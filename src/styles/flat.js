@@ -185,14 +185,17 @@ export const neon = {
     };
 
     drawLayers(ctx, scene, {
+      // one tube around the whole head-and-ears silhouette: stroke every part at
+      // double width, then fill them all, which covers the inner halves and the
+      // edges where the ears overlap the head
       body(c, body) {
         for (const s of body) {
-          trace(c, s.polys, true);
-          c.fillStyle = rgba(g.bgColor, 0.85);
-          c.fill();
+          glowStroke(c, s.polys, true, g.fur, 14);
         }
         for (const s of body) {
-          glowStroke(c, s.polys, true, g.fur, 7);
+          trace(c, s.polys, true);
+          c.fillStyle = g.bgColor;
+          c.fill();
         }
       },
       shape(c, s, layer) {

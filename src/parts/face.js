@@ -286,6 +286,30 @@ export function mouth(f, top) {
     bezier([0, y], [0, y + mh * 0.6], [width * 0.9, y + mh * 0.6], [width, y - mh * 0.05], 14),
   ];
 
+  // y on a lip polyline at x, so tongues and teeth can hang exactly from it
+  const lipAt = (polys, x) => {
+    for (const poly of polys) {
+      for (let i = 1; i < poly.length; i++) {
+        const [x1, y1] = poly[i - 1];
+        const [x2, y2] = poly[i];
+        if ((x1 - x) * (x2 - x) <= 0 && x1 !== x2) {
+          return y1 + ((x - x1) / (x2 - x1)) * (y2 - y1);
+        }
+      }
+    }
+    return y;
+  };
+
+  // a shape whose top edge follows the lip between x0 and x1
+  const hanging = (lip, x0, x1, bottom) => {
+    const top = [];
+    for (let i = 0; i <= 10; i++) {
+      const x = lerp(x0, x1, i / 10);
+      top.push([x, lipAt(lip, x)]);
+    }
+    return [...top, ...bottom];
+  };
+
   switch (g.mouthKind) {
     case 'split': {
       const drop = g.mouthDrop ? h * 0.13 : 0;
@@ -316,11 +340,18 @@ export function mouth(f, top) {
       out.push(fillShape('mouthFill', ellipse(0, y + mh * 0.75, mw * 0.28, mh * 0.5), '#5a1a24', ink, 5));
       break;
 
-    case 'blep':
-      // flat top tucked under the mouth line, rounded bottom
-      out.push(fillShape('tongue', arc(mw * 0.08, y + mh * 0.25, mw * 0.22, mh * 0.75, 0, Math.PI, 16), '#ff7b9c', ink, 4));
-      stroke(w3());
+    case 'blep': {
+      // hangs from under one bump of the w, top edge tucked under the lip line
+      const lip = w3();
+      const cx = mw * 0.24;
+      const tw = mw * 0.16;
+      const top = Math.max(lipAt(lip, cx - tw), lipAt(lip, cx + tw));
+      // top edge runs left to right along the lip; the arc then runs right, down and back left
+      const tip = arc(cx, top, tw, mh * 0.62, 0, Math.PI, 14);
+      out.push(fillShape('tongue', hanging(lip, cx - tw, cx + tw, tip.slice(1, -1)), '#ff7b9c', ink, 4));
+      stroke(lip);
       break;
+    }
 
     case 'meow': {
       const top3 = [
@@ -328,18 +359,25 @@ export function mouth(f, top) {
         ...bezier([0, y], [mw * 0.1, y + mh * 0.4], [mw * 0.4, y + mh * 0.45], [mw * 0.7, y + mh * 0.1], 10).slice(1),
       ];
       const bottom = bezier([mw * 0.7, y + mh * 0.1], [mw * 0.5, y + mh * 2.2], [-mw * 0.5, y + mh * 2.2], [-mw * 0.7, y + mh * 0.1], 16);
-      out.push(fillShape('mouthFill', [...top3, ...bottom.slice(1, -1)], '#5a1a24', ink, 6));
-      out.push(fillShape('tongue', ellipse(0, y + mh * 1.45, mw * 0.32, mh * 0.28), '#ff7b9c'));
+      const open = [...top3, ...bottom.slice(1, -1)];
+      const floor = Math.max(...open.map(p => p[1]));
+      out.push(fillShape('mouthFill', open, '#5a1a24', ink, 6));
+      // the mouth shrunk toward its lowest point: always sits inside it
+      out.push(fillShape('tongue', scale(bottom, 0.62, 0.42, 0, floor - 2), '#ff7b9c'));
       break;
     }
 
-    case 'fangs':
+    case 'fangs': {
+      const lip = w3(mw * 0.55);
       for (const o of [-1, 1]) {
-        const x = o * mw * 0.3;
-        out.push(fillShape('teeth', [[x - mw * 0.1, y + mh * 0.3], [x + mw * 0.1, y + mh * 0.3], [x, y + mh * 0.95]], WHITE, ink, 3));
+        const x = o * mw * 0.27;
+        const tw = mw * 0.08;
+        const tip = [[x, Math.max(lipAt(lip, x - tw), lipAt(lip, x + tw)) + mh * 0.5]];
+        out.push(fillShape('teeth', hanging(lip, x - tw, x + tw, tip), WHITE, ink, 3));
       }
-      stroke(w3(mw * 0.55));
+      stroke(lip);
       break;
+    }
 
     case 'flat':
       stroke([[-mw * 0.55, y + mh * 0.55], [mw * 0.55, y + mh * 0.55]], 7);
@@ -397,11 +435,13 @@ export function whiskers(f, rng) {
   const polys = [];
 
   if (g.whiskerKind === 'pads') {
+    // start just past the widest mouth so the dots sit on the cheeks
+    const inner = g.mouthW * w + 10;
     const dots = [];
     for (const o of [-1, 1]) {
       for (let row = 0; row < 3; row++) {
         for (let col = 0; col < 3 - (row === 1 ? 0 : 1); col++) {
-          dots.push(circle(o * (w * 0.14 + col * w * 0.06 + (row === 1 ? 0 : w * 0.03)), baseY - spread * 0.7 + row * spread * 0.6, 3.2, 10));
+          dots.push(circle(o * (inner + col * w * 0.06 + (row === 1 ? 0 : w * 0.03)), baseY - spread * 0.7 + row * spread * 0.6, 3.2, 10));
         }
       }
     }
@@ -409,6 +449,9 @@ export function whiskers(f, rng) {
   }
 
   for (const o of [-1, 1]) {
+    // messy whiskers share one reach per side and jitter within their own band, so they never cross
+    const messyReach = rng.float(0.95, 1.25);
+
     for (let i = -1; i <= 1; i++) {
       const start = [o * w * (0.48 + (i === 0 ? 0.02 : 0)), baseY + i * spread];
       let reach = 1.12;
@@ -420,7 +463,7 @@ export function whiskers(f, rng) {
       let end = [o * w * reach, baseY + i * spread * 1.6];
 
       if (g.whiskerKind === 'messy') {
-        end = [o * w * rng.float(0.95, 1.25), baseY + i * spread * 1.6 + rng.float(-30, 30)];
+        end = [o * w * messyReach, baseY + i * spread * 1.6 + rng.float(-0.55, 0.55) * spread];
       }
 
       if (g.whiskerKind === 'droopy' || g.whiskerKind === 'long') {
