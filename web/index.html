@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>cat-snacks</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>😸</text></svg>">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <main>
+      <section class="stage">
+        <div class="frame">
+          <canvas id="cat" width="900" height="900" aria-label="a generated cat"></canvas>
+          <div id="grid" class="grid" hidden></div>
+        </div>
+        <div class="bar">
+          <button id="back" title="previous cat (←)" aria-label="previous cat">←</button>
+          <input id="seed" spellcheck="false" aria-label="seed">
+          <button id="another" class="primary" title="new cat (space or →)">another!</button>
+        </div>
+        <div class="bar small">
+          <label class="toggle"><input type="checkbox" id="animate"> animate <kbd>a</kbd></label>
+          <label class="toggle"><input type="checkbox" id="gridMode"> grid <kbd>g</kbd></label>
+          <button id="save" title="download png (s)">save png</button>
+          <button id="record" title="record a 4 second clip">record clip</button>
+          <button id="copy" title="copy a link to this cat">copy link</button>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <header>
+          <h1>cat-snacks <span>😸</span></h1>
+          <p>Pinned traits <span class="pin-dot"></span> survive new cats. Click a pin to let it go.</p>
+        </header>
+
+        <div class="field">
+          <label for="chaos">chaos <output id="chaosOut"></output></label>
+          <input type="range" id="chaos" min="0" max="1" step="0.05">
+        </div>
+
+        <div id="selects"></div>
+
+        <div class="group">
+          <h2>accessories <button class="unpin" data-key="accessories" hidden>unpin</button></h2>
+          <div class="chips" id="accessories"></div>
+        </div>
+
+        <div class="group">
+          <h2>patterns <button class="unpin" data-key="patterns" hidden>unpin</button></h2>
+          <div class="chips" id="patterns"></div>
+        </div>
+
+        <div class="group">
+          <h2>effects <button class="unpin" data-key="effects" hidden>unpin</button></h2>
+          <div class="chips" id="effects"></div>
+        </div>
+
+        <button id="unpinAll" class="wide">unpin everything</button>
+      </aside>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
