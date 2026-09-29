@@ -1,6 +1,6 @@
 import {
-  ACCESSORIES, BACKGROUNDS, BROWS, EAR_SHAPES, EFFECTS, EYE_KINDS, HEAD_SHAPES, MOUTH_KINDS,
-  NOSE_KINDS, PATTERNS, STYLES, STYLE_META, WHISKER_KINDS, createGenome, randomSeed, renderCat,
+  ACCESSORIES, BACKGROUNDS, BROWS, EAR_SHAPES, EFFECTS, EYE_KINDS, FRAMES, HEAD_SHAPES, MOUTH_KINDS,
+  NOSE_KINDS, PATTERNS, STYLES, STYLE_META, WHISKER_KINDS, createGenome, randomSeed, rarity, renderCat,
 } from '../src/index.js';
 
 const $ = id => document.getElementById(id);
@@ -17,6 +17,7 @@ const SELECTS = [
   ['whiskerKind', 'whiskers', WHISKER_KINDS],
   ['brows', 'brows', BROWS],
   ['background', 'background', BACKGROUNDS],
+  ['frame', 'frame', FRAMES],
 ];
 
 const CHIPS = [
@@ -135,6 +136,9 @@ function syncControls() {
   }
 
   $('seed').value = state.seed;
+  $('catName').textContent = g.name;
+  $('rarity').textContent = rarity(g);
+  $('rarity').dataset.tier = rarity(g);
   $('chaos').value = state.chaos;
   $('chaosOut').textContent = state.chaos.toFixed(2);
 }

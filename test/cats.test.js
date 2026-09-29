@@ -3,6 +3,7 @@ import {beforeAll, describe, expect, test} from 'vitest';
 import {BACKGROUND_NAMES} from '../src/backgrounds.js';
 import * as catalog from '../src/catalog.js';
 import {EFFECTS} from '../src/effects.js';
+import {FRAMES} from '../src/frames.js';
 import {createGenome, renderCat, setCanvasFactory} from '../src/index.js';
 import {ACCESSORY_NAMES} from '../src/parts/accessories.js';
 import {EYE_RADIUS} from '../src/parts/face.js';
@@ -40,6 +41,7 @@ describe('catalog', () => {
     expect(BACKGROUND_NAMES.sort()).toEqual([...catalog.BACKGROUNDS].sort());
     expect(Object.keys(EFFECTS).sort()).toEqual([...catalog.EFFECTS].sort());
     expect(Object.keys(EYE_RADIUS).sort()).toEqual([...catalog.EYE_KINDS].sort());
+    expect(Object.keys(FRAMES).sort()).toEqual([...catalog.FRAMES].sort());
   });
 });
 
@@ -85,7 +87,10 @@ describe('genome', () => {
 
   test('styles that are already a medium never get a whole-picture color transform', () => {
     const media = catalog.STYLES.filter(s => STYLE_META[s].medium);
-    expect(media.sort()).toEqual(['blueprint', 'chalk', 'cubist', 'doodle', 'line', 'neon', 'pixel', 'popart', 'watercolor', 'woodcut']);
+    expect(media.sort()).toEqual([
+      'blueprint', 'chalk', 'comic', 'cubist', 'doodle', 'embroidery', 'line', 'neon', 'pixel', 'popart',
+      'stainedglass', 'tattoo', 'ukiyoe', 'watercolor', 'woodcut',
+    ]);
 
     for (const style of media) {
       for (let i = 0; i < 60; i++) {
@@ -104,6 +109,17 @@ describe('genome', () => {
       const g = createGenome(`aspect-${i}`, {chaos: 1});
       expect(g.headH / g.headW).toBeGreaterThanOrEqual(0.58 - 1e-9);
     }
+  });
+
+  test('every cat has a name, and the same seed always gets the same one', () => {
+    const names = new Set();
+    for (let i = 0; i < 50; i++) {
+      const g = createGenome(`named-${i}`);
+      expect(g.name).toBe(createGenome(`named-${i}`).name);
+      expect(g.name.length).toBeGreaterThan(2);
+      names.add(g.name);
+    }
+    expect(names.size).toBeGreaterThan(40);
   });
 
   test('genomes round-trip through JSON', () => {
@@ -230,8 +246,9 @@ describe('face part geometry', () => {
 });
 
 describe('silhouettes', () => {
-  // every style that paints the cat's body, except pixel (too coarse to sample) and the collages
-  const painted = catalog.STYLES.filter(s => !['pixel', 'cubist', 'popart'].includes(s));
+  // every style that paints the cat's body, except pixel (too coarse to sample), the
+  // collages, and stained glass, whose lead lines cross the head on purpose
+  const painted = catalog.STYLES.filter(s => !['pixel', 'cubist', 'popart', 'stainedglass'].includes(s));
 
   // average luminance of a 7x7 window around a scene point
   function tone(canvas, frame, [sx, sy]) {
@@ -245,7 +262,7 @@ describe('silhouettes', () => {
 
   test.each(painted)('%s: no ear edge shows inside the head', style => {
     const g = createGenome('silhouette', {
-      style, fur: '#c9a27e', patterns: [], accessories: [], effects: [], background: 'solid',
+      style, fur: '#c9a27e', patterns: [], accessories: [], effects: [], frame: 'none', background: 'solid',
       earShape: 'pointy', earInsides: false, whiskerKind: 'none', headShape: 'squircle', headN: 3,
       // keep the eyes low and apart so the forehead sample is open fur in every style
       eyeY: 0.05, eyeSpacing: 0.42,
@@ -265,7 +282,7 @@ describe('silhouettes', () => {
 describe('neon', () => {
   test('draws the head and ears as one outline: no ear tube inside the head', () => {
     const g = createGenome('neon-ears', {
-      style: 'neon', patterns: [], accessories: [], effects: [], background: 'solid', bgColor: '#000000',
+      style: 'neon', patterns: [], accessories: [], effects: [], frame: 'none', background: 'solid', bgColor: '#000000',
       earShape: 'pointy', earInsides: false, whiskerKind: 'none', headShape: 'ellipse',
     });
     const scene = buildScene(g);
@@ -357,6 +374,26 @@ describe('rendering', () => {
     expect(pixel(canvas, SIZE / 2, SIZE / 2)[3]).toBe(255);
   });
 
+  test.each(['popart', 'cubist'])('%s frames the whole collage once, not each piece', style => {
+    const g = createGenome('collage', {style, frame: 'stamp', effects: [], background: 'solid', bgColor: '#3366cc'});
+    const size = 600;
+    const canvas = renderCat(g, {size});
+    // just inside the stamp's picture window: the collage's own background,
+    // not the kraft envelope of a stamp framing one of its pieces
+    const [r, gg, b] = pixel(canvas, 140, 94);
+    expect(contrast(toHex([r, gg, b]), '#d9b98a')).toBeGreaterThan(1.3);
+  });
+
+  test('transparent renders skip the frame and style decorations', () => {
+    for (const style of ['classic', 'tattoo', 'comic', 'embroidery', 'ukiyoe']) {
+      const g = createGenome('bare', {style, frame: 'card', effects: [], accessories: []});
+      const canvas = renderCat(g, {size: SIZE, transparent: true});
+      for (const [x, y] of [[1, 1], [SIZE - 2, 1], [1, SIZE - 2], [SIZE - 2, SIZE - 2]]) {
+        expect(pixel(canvas, x, y)[3]).toBe(0);
+      }
+    }
+  });
+
   test('animation frames differ', () => {
     const g = createGenome('anim', {effects: [], background: 'sunburst'});
     expect(fingerprint(renderCat(g, {size: SIZE, t: 0}))).not.toBe(fingerprint(renderCat(g, {size: SIZE, t: 1.3})));
@@ -381,6 +418,7 @@ describe('rendering', () => {
     ...catalog.ACCESSORIES.map(v => ['accessories', [v]]),
     ...catalog.BACKGROUNDS.map(v => ['background', v]),
     ...catalog.EFFECTS.map(v => ['effects', [v]]),
+    ...catalog.FRAMES.map(v => ['frame', v]),
   ];
 
   test.each(cases)('%s = %s renders', (key, value) => {
@@ -390,7 +428,7 @@ describe('rendering', () => {
   });
 
   test('glasses in line art leave the eyes visible', () => {
-    const base = {style: 'line', eyeKind: 'round', eyeKindR: 'round', effects: [], background: 'solid'};
+    const base = {style: 'line', eyeKind: 'round', eyeKindR: 'round', effects: [], frame: 'none', background: 'solid'};
     const without = createGenome('specs', {...base, accessories: []});
     const withGlasses = createGenome('specs', {...base, accessories: ['roundGlasses']});
     const [ex, ey] = buildScene(without).anchors.eyes[1];

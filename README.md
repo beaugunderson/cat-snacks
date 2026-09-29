@@ -8,7 +8,7 @@ occasionally deeply cursed) cat faces. Every cat grows from a seed: the same
 seed always draws the same cat. You can help by adding new ways to draw cat
 faces!
 
-![the same cat drawn in all sixteen styles](/examples/styles.png)
+![the same cat drawn in all 22 styles](/examples/styles.png)
 
 ### How to contribute
 
@@ -85,10 +85,15 @@ first.
   the colors the classic style would use.
 - **styles** (`src/styles/`): each style decides how to paint the same shapes.
   Line art hatches them, neon turns them into glowing tubes, pixel art
-  rasterizes them, and cubist and pop art collage whole renders.
+  rasterizes them, stained glass leads them into panes, embroidery stitches
+  them, and cubist and pop art collage whole renders.
 - **effects** (`src/effects.js`): pixel-level passes over the finished picture
   (glitch, riso, Atkinson dithering, CRT...) or over the cat on its own layer
   (sticker, shadow, glow).
+- **names and frames** (`src/names.js`, `src/frames.js`): every cat has a
+  name and a rarity (from how strange its traits are). A frame presents the
+  finished picture as a polaroid, a trading card, a postage stamp or a museum
+  piece.
 
 To figure out how bezier curve math works this [interactive curve tool][tool]
 can be helpful.
@@ -114,12 +119,14 @@ each name there has an implementation.
 - **a style**: add a painter in `src/styles/`, register it in
   `src/styles/index.js`, and give it a weight (and optionally a genome tweak)
   in `src/styles/meta.js`
+- **a frame**: add a function to `src/frames.js` that takes the finished
+  picture and returns a new canvas
 
 Then run `pnpm cat --gallery` or `pnpm test` to see it in action.
 
 ### Help wanted!
 
-- more styles: ukiyo-e, stained glass windows, tattoo flash, claymation...
+- more styles: art nouveau, Bauhaus posters, knitting, mosaic tiles...
 - more colors (or color sets, colors that work well together)
 - snacks! toys! more hats!
 - notched ears, scars, tongues of unusual length

@@ -95,6 +95,31 @@ main {
   transform: scale(1.03);
 }
 
+.nameplate {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.tier {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  --c: #9aa0a6;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 16%, transparent);
+}
+
+.tier[data-tier="uncommon"] { --c: #2e9e5b; }
+.tier[data-tier="rare"] { --c: #2f6fd6; }
+.tier[data-tier="epic"] { --c: #8e44ad; }
+.tier[data-tier="legendary"] { --c: #d4a017; }
+
 .bar {
   display: flex;
   gap: 8px;

@@ -4,6 +4,7 @@ import {
 } from './catalog.js';
 import {hsl, lighten, darken, pickContrasting, shiftHue} from './color.js';
 import * as P from './palettes.js';
+import {catName} from './names.js';
 import {Rng, randomSeed} from './rng.js';
 import {STYLE_META} from './styles/meta.js';
 
@@ -184,6 +185,8 @@ export function createGenome(seed = randomSeed(), overrides = {}) {
     background: background(root.fork('background'), chaos),
     bgColor2: null,
     effects: effects(root.fork('effects'), chaos),
+    name: catName(root.fork('name')),
+    frame: root.fork('frame').chance(0.08 + 0.3 * chaos) ? root.fork('frame-kind').pick(['polaroid', 'card', 'stamp', 'museum']) : 'none',
     // animation phase offsets, so a grid of cats doesn't blink in unison
     phase: root.fork('phase').float(0, 100),
   };
@@ -201,7 +204,8 @@ export function createGenome(seed = randomSeed(), overrides = {}) {
     g.eyeKind = g.eyeKindR = 'glow';
   }
 
-  if (g.accessories.some(a => a === 'fish' || a === 'bubblegum')) {
+  // things held in the mouth need a small closed mouth to hold them
+  if (g.accessories.some(a => ['fish', 'bubblegum', 'rose', 'pizza', 'bubblePipe'].includes(a))) {
     g.mouthKind = 'w';
   }
 

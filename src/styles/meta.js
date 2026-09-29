@@ -218,4 +218,90 @@ export const STYLE_META = {
     weight: c => 0.2 + 0.8 * c,
     tweak: () => ({background: 'solid'}),
   },
+
+  ukiyoe: {
+    label: 'Ukiyo-e',
+    medium: true,
+    weight: () => 0.9,
+    tweak: (_g, r) => ({
+      fur: r.pick(['#d9a441', '#f2e8cf', '#2b4c7e', '#8c6a4f', '#e4d3b0', '#3a3a3a', '#c9784b']),
+      ink: '#1b1b1b',
+      noseColor: '#c73e1d',
+      earInner: '#e8a598',
+      accent: '#c73e1d',
+      accent2: '#2b4c7e',
+      bgColor: '#efe4c8',
+      bgColor2: r.pick(['#2b4c7e', '#8fa9b8', '#c73e1d']),
+      background: r.chance(0.7) ? 'seigaiha' : 'paper',
+    }),
+  },
+
+  stainedglass: {
+    label: 'Stained glass',
+    medium: true,
+    weight: () => 0.8,
+    tweak: (_g, r) => {
+      const jewel = () => r.pick(['#1f6fb2', '#c0392b', '#27ae60', '#8e44ad', '#f39c12', '#16a085', '#d35400']);
+      const eye = r.pick(['#f1c40f', '#1abc9c', '#e74c3c', '#5dade2']);
+      return {
+        fur: jewel(),
+        eyeColor: eye,
+        eyeColorR: eye,
+        noseColor: r.pick(['#e74c3c', '#f5b7b1']),
+        earInner: jewel(),
+        accent: jewel(),
+        accent2: jewel(),
+        background: 'glasspanes',
+      };
+    },
+  },
+
+  tattoo: {
+    label: 'Tattoo flash',
+    medium: true,
+    weight: () => 0.8,
+    tweak: (_g, r) => ({
+      fur: r.pick(['#f6be00', '#c8102e', '#00843d', '#f3e6c8', '#e8a87c', '#1b1b1b']),
+      eyeColor: r.pick(['#00843d', '#c8102e', '#3a6ea5']),
+      noseColor: '#c8102e',
+      accent: '#c8102e',
+      accent2: '#00843d',
+      ink: '#111111',
+      bgColor: '#f3e6c8',
+      background: 'paper',
+    }),
+  },
+
+  clay: {
+    label: 'Claymation',
+    weight: () => 1,
+    tweak: (_g, r) => ({
+      whiskerKind: r.pick(['none', 'straight', 'droopy', 'pads']),
+      bgColor: r.pick(['#f2d7b6', '#cfe3e8', '#e9d5f0', '#dfe9c9']),
+      background: r.pick(['solid', 'circle', 'dots']),
+    }),
+  },
+
+  comic: {
+    label: 'Comic book',
+    medium: true,
+    weight: () => 1,
+    tweak: (_g, r) => ({
+      ink: '#111111',
+      bgColor: r.pick(['#ffe66d', '#4cc9f0', '#ff6b6b', '#b8f2e6']),
+      bgColor2: '#ffffff',
+      background: r.chance(0.7) ? 'speedlines' : 'halftone',
+    }),
+  },
+
+  embroidery: {
+    label: 'Embroidery',
+    medium: true,
+    weight: () => 0.8,
+    tweak: (_g, r) => ({
+      bgColor: r.pick(['#f4efe6', '#e8e0cf', '#dfe8e6', '#f2e3e3']),
+      background: 'fabric',
+      whiskerKind: r.pick(['straight', 'droopy', 'none']),
+    }),
+  },
 };

@@ -1,6 +1,6 @@
 import {darken, lighten} from '../color.js';
 import {
-  TAU, arc, bezier, circle, ellipse, heart, lerp, lerpPt, path, quad, rect, rotate, roundRect,
+  TAU, arc, bezier, circle, ellipse, heart, inflate, lerp, lerpPt, path, quad, rect, rotate, roundRect,
   star, translate,
 } from '../geom.js';
 import {fillShape, lineShape, textShape} from '../shapes.js';
@@ -712,6 +712,467 @@ const ACCESSORIES = {
     }
 
     return {front: [accLine(polys, '#7cb342', 6, {alpha: 0.8})]};
+  },
+
+  // more hats -----------------------------------------------------------------
+
+  tricorn(a) {
+    const {w, h, top, ink, rng} = a;
+    const base = top + h * 0.18;
+    const brim = path([-w * 0.8, base])
+      .quad([-w * 0.5, base - h * 0.95], [0, base - h * 0.55])
+      .quad([w * 0.5, base - h * 0.95], [w * 0.8, base])
+      .quad([0, base + h * 0.14], [-w * 0.8, base])
+      .pts;
+    const trim = [
+      quad([-w * 0.8, base], [-w * 0.5, base - h * 0.95], [0, base - h * 0.55], 14),
+      quad([0, base - h * 0.55], [w * 0.5, base - h * 0.95], [w * 0.8, base], 14),
+    ];
+    const skull = [0, base - h * 0.2];
+    const shapes = [
+      acc(brim, '#2b2118', ink, 6),
+      accLine(trim, '#d4a017', 4),
+      accLine([[[skull[0] - 16, skull[1] + 12], [skull[0] + 16, skull[1] + 26]], [[skull[0] + 16, skull[1] + 12], [skull[0] - 16, skull[1] + 26]]], '#f4efe4', 4),
+      acc(circle(skull[0], skull[1], 11), '#f4efe4', null, 0),
+      acc([circle(skull[0] - 4, skull[1] - 1, 2.5, 8), circle(skull[0] + 4, skull[1] - 1, 2.5, 8)], '#2b2118', null, 0),
+    ];
+    return {front: tilt(shapes, rng.float(-0.12, 0.12), [0, base])};
+  },
+
+  chef(a) {
+    const {w, h, top, ink} = a;
+    const base = top + h * 0.15;
+    const white = '#fbfbf8';
+    const puffs = [
+      circle(-w * 0.26, base - h * 0.5, w * 0.24),
+      circle(w * 0.26, base - h * 0.5, w * 0.24),
+      circle(0, base - h * 0.68, w * 0.28),
+    ];
+    const band = roundRect(-w * 0.36, base - h * 0.3, w * 0.72, h * 0.32, 8);
+    const pleats = [-0.18, 0, 0.18].map(t => [[w * t, base - h * 0.26], [w * t, base - h * 0.02]]);
+    // an ink underlay a little larger than the white fill gives one outline
+    // around the whole toque, without seams where the puffs overlap
+    return {
+      front: [
+        acc([...puffs.map(p => inflate(p, 5)), inflate(band, 5)], ink, null, 0),
+        acc([...puffs, band, roundRect(-w * 0.3, base - h * 0.62, w * 0.6, h * 0.4, 10)], white, null, 0),
+        accLine(pleats, '#d9d6cc', 3),
+      ],
+    };
+  },
+
+  santa(a) {
+    const {w, h, top, ink} = a;
+    const base = top + h * 0.2;
+    const cone = path([-w * 0.48, base])
+      .quad([-w * 0.25, base - h * 1.25], [w * 0.5, base - h * 0.78])
+      .quad([w * 0.15, base - h * 0.62], [w * 0.48, base])
+      .pts;
+    return {
+      front: [
+        acc(cone, '#d62828', ink, 5),
+        acc(roundRect(-w * 0.56, base - h * 0.13, w * 1.12, h * 0.24, h * 0.12), '#f8f6f0', ink, 5),
+        acc(circle(w * 0.52, base - h * 0.8, w * 0.1), '#f8f6f0', ink, 4),
+      ],
+    };
+  },
+
+  viking(a) {
+    const {w, h, top, ink} = a;
+    const base = top + h * 0.35;
+    const steel = '#9aa5b1';
+    const dome = arc(0, base, w * 0.66, h * 0.6, Math.PI, TAU, 30);
+    const horns = [-1, 1].map(o => [
+      ...quad([o * w * 0.5, base - h * 0.15], [o * w * 1.0, base - h * 0.2], [o * w * 0.95, base - h * 1.05], 14),
+      ...quad([o * w * 0.95, base - h * 1.05], [o * w * 0.82, base - h * 0.45], [o * w * 0.56, base - h * 0.4], 14).slice(1),
+    ]);
+    const rivets = [-0.45, -0.22, 0, 0.22, 0.45].map(t => circle(w * t, base - h * 0.03, 4.5, 10));
+    return {
+      front: [
+        acc(horns, '#f1e3c6', ink, 5),
+        acc(dome, steel, ink, 6),
+        accLine([[[0, base - h * 0.6], [0, base]]], lighten(steel, 0.12), 8),
+        acc(roundRect(-w * 0.7, base - h * 0.12, w * 1.4, h * 0.2, 6), darken(steel, 0.08), ink, 5),
+        acc(rivets, '#e8e2d0', null, 0),
+      ],
+    };
+  },
+
+  gradcap(a) {
+    const {w, h, top, ink, rng} = a;
+    const base = top + h * 0.2;
+    const board = [[-w * 0.78, base - h * 0.32], [0, base - h * 0.52], [w * 0.78, base - h * 0.32], [0, base - h * 0.12]];
+    const button = [0, base - h * 0.32];
+    const tassel = [w * 0.6, base - h * 0.28];
+    const shapes = [
+      acc(roundRect(-w * 0.36, base - h * 0.3, w * 0.72, h * 0.34, 10), '#1d1a1f', ink, 5),
+      acc(board, '#26232a', ink, 5),
+      accLine([[button, tassel, [tassel[0], base + h * 0.15]]], '#f2c14e', 5),
+      acc(roundRect(tassel[0] - 7, base + h * 0.1, 14, h * 0.2, 4), '#f2c14e', null, 0),
+      acc(circle(button[0], button[1], 7), '#f2c14e', null, 0),
+    ];
+    return {front: tilt(shapes, rng.float(-0.1, 0.1), [0, base])};
+  },
+
+  spaceHelmet(a) {
+    const {w, h, top, bottom} = a;
+    const cy = (top + bottom) / 2 - h * 0.08;
+    const r = Math.max(w * 1.12, (bottom - top) * 0.62);
+    return {
+      front: [
+        acc(circle(0, cy, r, 64), '#cfe9ff', '#e6f2ff', 7, {alpha: 0.22}),
+        accLine([arc(0, cy, r * 0.84, r * 0.84, Math.PI * 1.15, Math.PI * 1.45, 16)], '#ffffff', 10, {alpha: 0.7}),
+        accLine([arc(0, cy, r * 0.84, r * 0.84, Math.PI * 1.52, Math.PI * 1.6, 6)], '#ffffff', 10, {alpha: 0.7}),
+        acc(roundRect(-r * 0.7, cy + r * 0.86, r * 1.4, r * 0.2, r * 0.08), '#b8c2cc', a.ink, 5),
+      ],
+    };
+  },
+
+  mohawk(a) {
+    const {w, h, top, rng} = a;
+    const color = rng.pick(['#ff2e88', '#39ff14', '#00c2ff', '#b026ff', '#ff6b00']);
+    const spikes = [];
+    const n = 5;
+    for (let i = 0; i < n; i++) {
+      const x = lerp(-w * 0.26, w * 0.26, i / (n - 1));
+      const tall = h * (0.4 + 0.25 * Math.sin((i / (n - 1)) * Math.PI)) * rng.float(0.85, 1.1);
+      spikes.push([[x - w * 0.09, top + h * 0.25], [x + rng.float(-8, 8), top - tall], [x + w * 0.09, top + h * 0.25]]);
+    }
+    // behind the head, so the spikes grow out from under the outline
+    return {back: [acc(spikes, color, a.ink, 5)]};
+  },
+
+  catEars(a) {
+    const {w, h, top, ink} = a;
+    const band = arc(0, top + h * 0.95, w * 0.82, h * 1.12, Math.PI * 1.1, Math.PI * 1.9, 26);
+    const ears = [-1, 1].map(o => {
+      const bx = o * w * 0.36;
+      const by = top + h * 0.02;
+      return {
+        outer: [[bx - w * 0.14, by], [bx + o * w * 0.05, by - h * 0.5], [bx + w * 0.14, by]],
+        inner: [[bx - w * 0.07, by - h * 0.04], [bx + o * w * 0.04, by - h * 0.32], [bx + w * 0.07, by - h * 0.04]],
+      };
+    });
+    return {
+      front: [
+        accLine([band], ink, 12),
+        accLine([band], a.accent, 7),
+        acc(ears.map(e => e.outer), a.accent, ink, 5),
+        acc(ears.map(e => e.inner), '#f7a8b8', null, 0),
+      ],
+    };
+  },
+
+  // more ears -----------------------------------------------------------------
+
+  flowerEar(a) {
+    const {w, ears, ink, rng} = a;
+    const ear = ears[0];
+    const [cx, cy] = lerpPt(lerpPt(ear.inner, ear.outer, 0.5), ear.tip, 0.15);
+    const r = w * 0.1;
+    const color = rng.pick(['#ff4d6d', '#ff8fab', '#ffb703', '#f15bb5']);
+    const petals = [];
+    for (let i = 0; i < 5; i++) {
+      const angle = (i / 5) * TAU - Math.PI / 2;
+      petals.push(ellipse(cx + Math.cos(angle) * r * 0.9, cy + Math.sin(angle) * r * 0.9, r * 0.75, r * 0.55, 18, angle));
+    }
+    return {
+      front: [
+        acc(petals, color, ink, 3),
+        accLine([[[cx, cy], [cx + r * 0.6, cy - r * 1.1]]], '#ffd23f', 3),
+        acc(circle(cx, cy, r * 0.28), '#ffd23f', null, 0),
+      ],
+    };
+  },
+
+  piercings(a) {
+    const {ears, w} = a;
+    const ear = ears[1];
+    const studs = [0.22, 0.45, 0.66].map(t => {
+      const [x, y] = lerpPt(ear.outer, ear.tip, t);
+      return circle(x - 5, y, 4.5, 10);
+    });
+    const [hx, hy] = lerpPt(ear.outer, ear.tip, 0.08);
+    return {
+      front: [
+        acc(studs, '#f5d77a', '#8a6a1c', 2),
+        accLine([arc(hx - 2, hy + w * 0.045, w * 0.045, w * 0.045, -0.4, Math.PI + 0.4, 14)], '#f5d77a', 4),
+      ],
+    };
+  },
+
+  // more eyewear --------------------------------------------------------------
+
+  heartShades(a) {
+    const {eyes, eyeRadius, ink} = a;
+    const s = Math.max(eyeRadius * 1.45, 26);
+    const lenses = eyes.map(([x, y]) => heart(x, y + s * 0.05, s));
+    return {
+      front: [
+        acc(lenses, '#ff2e63', ink, 5, {alpha: 0.88}),
+        accLine([[[eyes[0][0] + s * 0.75, eyes[0][1] - s * 0.25], [eyes[1][0] - s * 0.75, eyes[1][1] - s * 0.25]]], ink, 5),
+        acc(eyes.map(([x, y]) => ellipse(x - s * 0.35, y - s * 0.3, s * 0.18, s * 0.1, 12, -0.5)), '#ffffff', null, 0, {alpha: 0.7}),
+      ],
+    };
+  },
+
+  starShades(a) {
+    const {eyes, eyeRadius, ink} = a;
+    const s = Math.max(eyeRadius * 1.6, 28);
+    return {
+      front: [
+        acc(eyes.map(([x, y]) => star(x, y, s, 0.55, 5)), '#ffd23f', ink, 5, {alpha: 0.9}),
+        accLine([[[eyes[0][0] + s * 0.5, eyes[0][1] - s * 0.1], [eyes[1][0] - s * 0.5, eyes[1][1] - s * 0.1]]], ink, 5),
+      ],
+    };
+  },
+
+  goggles(a) {
+    const {eyes, eyeRadius, w, ink} = a;
+    const r = Math.max(eyeRadius * 1.3, 24);
+    const brass = '#b5893b';
+    const y = eyes[0][1];
+    return {
+      front: [
+        accLine([[[-w * 1.02, y - 4], [eyes[0][0] - r, y]], [[eyes[1][0] + r, y], [w * 1.02, y - 4]]], '#5a3b1e', 12),
+        acc(eyes.map(([x, yy]) => circle(x, yy, r)), '#6fc3df', null, 0, {alpha: 0.45}),
+        accLine(eyes.map(([x, yy]) => [...circle(x, yy, r), circle(x, yy, r)[0]]), brass, 9),
+        accLine(eyes.map(([x, yy]) => [...circle(x, yy, r + 6), circle(x, yy, r + 6)[0]]), ink, 2),
+        accLine([[[eyes[0][0] + r, y], [eyes[1][0] - r, y]]], brass, 7),
+        acc(eyes.map(([x, yy]) => circle(x + r * 0.72, yy - r * 0.72, 3.5, 8)), '#e8d6a0', null, 0),
+      ],
+    };
+  },
+
+  sleepMask(a) {
+    const {eyes, eyeRadius, w, ink, rng} = a;
+    const hh = Math.max(eyeRadius * 1.25, 22);
+    const [l, r] = eyes;
+    const color = rng.pick(['#b8a1e3', '#f7a8b8', '#9ad0ec', '#2b2d42']);
+    const mask = roundRect(l[0] - hh * 1.9, l[1] - hh, r[0] - l[0] + hh * 3.8, hh * 2, hh);
+    const lashes = eyes.map(([x, y]) => arc(x, y - hh * 0.2, hh * 0.8, hh * 0.55, 0.2, Math.PI - 0.2, 14));
+    const thread = color === '#2b2d42' ? '#f4efe4' : '#3b2d4f';
+    return {
+      front: [
+        accLine([[[-w * 1.02, l[1] - hh * 0.5], [l[0] - hh * 1.9, l[1]]], [[r[0] + hh * 1.9, r[1]], [w * 1.02, r[1] - hh * 0.5]]], ink, 5),
+        acc(mask, color, ink, 5),
+        accLine(lashes, thread, 4),
+      ],
+    };
+  },
+
+  // more face -----------------------------------------------------------------
+
+  rose(a) {
+    const {w, h, mouthY, ink} = a;
+    const y = mouthY + h * 0.02;
+    const head = [-w * 0.42, y - h * 0.12];
+    const r = w * 0.1;
+    const petals = [];
+    for (let i = 0; i < 6; i++) {
+      const angle = (i / 6) * TAU;
+      petals.push(circle(head[0] + Math.cos(angle) * r * 0.55, head[1] + Math.sin(angle) * r * 0.55, r * 0.6, 14));
+    }
+    const swirl = arc(head[0], head[1], r * 0.45, r * 0.45, 0, TAU * 0.85, 16);
+    return {
+      front: [
+        accLine([quad([head[0], head[1]], [0, y + h * 0.12], [w * 0.5, y + h * 0.06], 16)], '#2d6a4f', 6),
+        acc(ellipse(w * 0.2, y + h * 0.13, w * 0.09, w * 0.04, 16, -0.4), '#40916c', ink, 3),
+        acc(petals, '#d00000', ink, 3),
+        accLine([swirl], '#6a040f', 3),
+      ],
+    };
+  },
+
+  bubblePipe(a) {
+    const {w, h, mouthY, ink, t} = a;
+    const y = mouthY + h * 0.05;
+    const bowl = [w * 0.62, y + h * 0.05];
+    const bubbles = [];
+    for (let i = 0; i < 4; i++) {
+      const rise = t == null ? i * 38 : ((t * 45 + i * 38) % 150);
+      const r = 8 + i * 3;
+      bubbles.push(circle(bowl[0] + Math.sin(i * 2 + (t || 0) * 2) * 12, bowl[1] - h * 0.3 - rise, r, 20));
+    }
+    return {
+      front: [
+        accLine([[[w * 0.12, y], [bowl[0] - w * 0.05, y + h * 0.02]]], '#5a3b1e', 7),
+        acc(roundRect(bowl[0] - w * 0.08, y - h * 0.12, w * 0.16, h * 0.2, 6), '#8a5a2b', ink, 4),
+        accLine(bubbles.map(b => [...b, b[0]]), '#9ad0ec', 3, {alpha: 0.85}),
+      ],
+    };
+  },
+
+  septum(a) {
+    const {noseBottom} = a;
+    return {front: [accLine([arc(0, noseBottom + 4, 12, 12, 0.2, Math.PI - 0.2, 14)], '#f5d77a', 5)]};
+  },
+
+  pizza(a) {
+    const {w, h, mouthY, ink} = a;
+    const tip = [w * 0.05, mouthY + h * 0.05];
+    const left = [-w * 0.22, mouthY + h * 0.75];
+    const right = [w * 0.4, mouthY + h * 0.68];
+    const pepperoni = [0.35, 0.55, 0.72].map((t, i) => {
+      const p = lerpPt(tip, lerpPt(left, right, [0.3, 0.7, 0.45][i]), t);
+      return circle(p[0], p[1], w * 0.035, 14);
+    });
+    return {
+      front: [
+        acc([tip, right, left], '#ffd166', ink, 4),
+        acc(pepperoni, '#c1121f', null, 0),
+        accLine([[left, right]], '#d08c47', 14),
+        accLine([[left, right]], ink, 2, {alpha: 0.5}),
+      ],
+    };
+  },
+
+  // more neck -----------------------------------------------------------------
+
+  pearls(a) {
+    const {w, h, bottom} = a;
+    const strand = quad([-w * 0.66, bottom - h * 0.35], [0, bottom + h * 0.62], [w * 0.66, bottom - h * 0.35], 26);
+    return {back: [acc(strand.map(([x, y]) => circle(x, y, 7.5, 12)), '#f7f3ea', '#b8b0a0', 2)]};
+  },
+
+  chain(a) {
+    const {w, h, bottom, ink} = a;
+    const strand = quad([-w * 0.7, bottom - h * 0.35], [0, bottom + h * 0.62], [w * 0.7, bottom - h * 0.35], 20);
+    const links = strand.map(([x, y], i) => ellipse(x, y, 9, 6, 14, i % 2 ? 0.8 : -0.8));
+    const [mx, my] = [0, bottom + h * 0.1];
+    return {
+      back: [accLine(links.map(l => [...l, l[0]]), '#f2c14e', 4)],
+      front: [
+        acc(circle(mx, my + w * 0.08, w * 0.1), '#f2c14e', ink, 4),
+        acc(star(mx, my + w * 0.08, w * 0.06, 0.45), '#fff3b0', null, 0),
+      ],
+    };
+  },
+
+  scarf(a) {
+    const {w, h, bottom, ink, rng} = a;
+    const band = quad([-w * 0.8, bottom - h * 0.3], [0, bottom + h * 0.5], [w * 0.8, bottom - h * 0.3], 24);
+    const side = rng.sign();
+    const tailX = side * w * 0.3;
+    const tailY = bottom - h * 0.02;
+    const stripes = [0.3, 0.55, 0.8].map(t => [[tailX - w * 0.1, tailY + h * 0.6 * t], [tailX + w * 0.1, tailY + h * 0.6 * t]]);
+    const fringe = [-0.07, -0.02, 0.03, 0.08].map(t => [[tailX + w * t, tailY + h * 0.62], [tailX + w * t, tailY + h * 0.72]]);
+    return {
+      back: [accLine([band], ink, 40), accLine([band], a.accent, 32)],
+      front: [
+        acc(roundRect(tailX - w * 0.11, tailY, w * 0.22, h * 0.62, 6), a.accent, ink, 4),
+        accLine(stripes, a.accent2, 6),
+        accLine(fringe, a.accent, 4),
+      ],
+    };
+  },
+
+  bread(a) {
+    const {w, h, top, bottom, ink} = a;
+    const H = (bottom - top) * 0.78;
+    const cy = (top + bottom) / 2 + h * 0.12;
+    const W = w * 1.28;
+    // a toast slice: a rounded body under a wider domed top
+    const slice = inset => [
+      roundRect(-W + inset, cy - H * 0.3 + inset, (W - inset) * 2, H * 1.0 - inset * 2, 36),
+      ellipse(0, cy - H * 0.3, W * 1.12 - inset, H * 0.48 - inset, 60),
+    ];
+    return {
+      back: [
+        acc(slice(-6), ink, null, 0),
+        acc(slice(0), '#b5733a', null, 0),
+        acc(slice(24), '#f1d7a3', null, 0),
+      ],
+    };
+  },
+
+  // more floating -------------------------------------------------------------
+
+  yarn(a) {
+    const {w, bottom, h, ink, rng, t} = a;
+    const side = rng.sign();
+    const cx = side * w * 1.02;
+    const cy = bottom - h * 0.1;
+    const r = w * 0.17;
+    const color = rng.pick(['#e63946', '#4895ef', '#f15bb5', '#80b918']);
+    const wraps = [0.3, 0.9, 1.5, 2.1].map(angle => arc(cx, cy, r * 0.95, r * 0.4, 0, Math.PI, 14).map(p => rotate([p], angle, cx, cy)[0]));
+    const thread = [];
+    for (let i = 0; i <= 20; i++) {
+      const u = i / 20;
+      thread.push([cx - side * r * 0.8 - side * u * w * 0.5, cy + r * 0.6 + Math.sin(u * 9 + (t || 0) * 2) * 10 + u * 20]);
+    }
+    return {
+      front: [
+        accLine([thread], color, 4),
+        acc(circle(cx, cy, r), color, ink, 4),
+        accLine(wraps, darken(color, 0.15), 3),
+      ],
+    };
+  },
+
+  butterflies(a) {
+    const {w, h, top, ink, rng, t} = a;
+    const shapes = [];
+    for (let i = 0; i < 3; i++) {
+      const x = rng.sign() * w * rng.float(0.75, 1.2) + (t == null ? 0 : Math.sin(t + i) * 15);
+      const y = top + rng.float(-30, h * 0.9) + (t == null ? 0 : Math.cos(t * 1.3 + i) * 10);
+      const flap = t == null ? 1 : 0.35 + 0.65 * Math.abs(Math.cos(t * 7 + i));
+      const s = rng.float(20, 30);
+      const color = rng.pick(['#ffb703', '#8ecae6', '#f15bb5', '#fb8500', '#b5e48c']);
+      const wings = [
+        ellipse(x - s * 0.55 * flap, y - s * 0.3, s * 0.6 * flap, s * 0.5, 16, -0.3),
+        ellipse(x + s * 0.55 * flap, y - s * 0.3, s * 0.6 * flap, s * 0.5, 16, 0.3),
+        ellipse(x - s * 0.4 * flap, y + s * 0.35, s * 0.4 * flap, s * 0.35, 14, 0.4),
+        ellipse(x + s * 0.4 * flap, y + s * 0.35, s * 0.4 * flap, s * 0.35, 14, -0.4),
+      ];
+      shapes.push(acc(wings, color, ink, 2));
+      shapes.push(accLine([[[x, y - s * 0.55], [x, y + s * 0.6]]], ink, 3));
+    }
+    return {front: shapes};
+  },
+
+  raincloud(a) {
+    const {w, h, top, ink, t} = a;
+    const cy = top - h * 0.55;
+    const puffs = [
+      circle(-w * 0.32, cy + 10, w * 0.2),
+      circle(0, cy - 8, w * 0.28),
+      circle(w * 0.32, cy + 10, w * 0.2),
+    ];
+    const drops = [];
+    const fall = t == null ? 0 : (t * 120) % 40;
+    for (let i = 0; i < 7; i++) {
+      const x = lerp(-w * 0.4, w * 0.4, i / 6);
+      const y = cy + w * 0.18 + ((i * 17 + fall) % 40);
+      drops.push([[x, y], [x - 6, y + 16]]);
+    }
+    const base = roundRect(-w * 0.5, cy + 4, w, w * 0.22, w * 0.1);
+    return {
+      front: [
+        accLine(drops, '#4895ef', 4),
+        acc([...puffs.map(p => inflate(p, 5)), inflate(base, 5)], ink, null, 0),
+        acc([...puffs, base], '#9aa5b1', null, 0),
+      ],
+    };
+  },
+
+  fishbone(a) {
+    const {w, h, top, ink, rng, t} = a;
+    const cx = rng.sign() * w * rng.float(0.8, 1.05);
+    const cy = top + h * rng.float(0.1, 0.6);
+    const L = w * 0.62;
+    const spin = (t || 0) * 0.8;
+    const ribs = [];
+    for (let i = 1; i <= 4; i++) {
+      const x = cx - L / 2 + (i / 5) * L * 0.8;
+      ribs.push([[x, cy - L * 0.18], [x, cy + L * 0.18]]);
+    }
+    const shapes = [
+      accLine([[[cx - L / 2, cy], [cx + L * 0.3, cy]], ...ribs], ink, 4),
+      acc([[cx + L * 0.28, cy - L * 0.18], [cx + L / 2, cy], [cx + L * 0.28, cy + L * 0.18]], '#e8e2d0', ink, 4),
+      acc([[cx - L / 2, cy], [cx - L * 0.68, cy - L * 0.18], [cx - L * 0.68, cy + L * 0.18]], '#e8e2d0', ink, 4),
+    ];
+    return {front: tilt(shapes, Math.sin(spin) * 0.4, [cx, cy])};
   },
 };
 

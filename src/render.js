@@ -1,6 +1,7 @@
 import {drawBackground} from './backgrounds.js';
 import {EFFECT_GROUPS, LAYER_EFFECTS} from './catalog.js';
 import {EFFECTS} from './effects.js';
+import {FRAMES} from './frames.js';
 import {Rng} from './rng.js';
 import {buildScene} from './scene.js';
 import {STYLES} from './styles/index.js';
@@ -46,7 +47,7 @@ export function renderCat(g, {size = 600, t = null, transparent = false} = {}) {
     const layer = createCanvas(size, size);
     const lctx = layer.getContext('2d');
     lctx.scale(size / 600, size / 600);
-    style.draw(lctx, buildScene(g, t), g, {...env, rng: rng.fork('style')});
+    style.draw(lctx, buildScene(g, t), g, {...env, transparent, rng: rng.fork('style')});
 
     for (const name of g.effects.filter(e => LAYER_EFFECTS.includes(e))) {
       EFFECTS[name](layer, {...env, rng: rng.fork(name)});
@@ -56,13 +57,16 @@ export function renderCat(g, {size = 600, t = null, transparent = false} = {}) {
     ctx.drawImage(layer, 0, 0);
   }
 
-  if (!transparent) {
-    for (const name of ORDER.filter(e => g.effects.includes(e))) {
-      EFFECTS[name](out, {...env, rng: rng.fork(name)});
-    }
+  if (transparent) {
+    return out;
   }
 
-  return out;
+  for (const name of ORDER.filter(e => g.effects.includes(e))) {
+    EFFECTS[name](out, {...env, rng: rng.fork(name)});
+  }
+
+  const frame = FRAMES[g.frame];
+  return frame ? frame(out, g, {...env, rng: rng.fork('frame')}) : out;
 }
 
 export function renderGrid(genomes, {size = 1200, gap = 8, t = null, background = '#ffffff'} = {}) {

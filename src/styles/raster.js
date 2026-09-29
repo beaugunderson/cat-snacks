@@ -146,8 +146,10 @@ const POP = [
   ['#f72585', '#4cc9f0', '#ffd60a'],
 ];
 
+// the pieces of a collage are plain renders: the collage as a whole gets
+// the cat's effects and frame
 function variant(g, overrides) {
-  return {...g, effects: [], ...overrides};
+  return {...g, effects: [], frame: 'none', ...overrides};
 }
 
 // Warhol: the same cat four times in clashing colors

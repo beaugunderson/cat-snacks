@@ -1,5 +1,5 @@
 import {darken, lighten, rgba, shiftHue} from './color.js';
-import {TAU, circle, heart, poisson, roundRect, star} from './geom.js';
+import {TAU, circle, heart, inflate, poisson, roundRect, star} from './geom.js';
 import {trace} from './styles/paint.js';
 
 // Backgrounds paint the full 600x600 design space behind the cat.
@@ -424,6 +424,104 @@ const BACKGROUNDS = {
         ctx.lineTo(SIZE, i);
       }
       ctx.stroke();
+    }
+  },
+
+  // Japanese wave scales: overlapping rows of concentric half circles
+  seigaiha(ctx, g) {
+    solid(ctx, g);
+    const r = 34;
+    ctx.lineWidth = 2.2;
+
+    for (let row = -1; row * r * 0.5 < SIZE + r; row++) {
+      const y = row * r * 0.5;
+      const shift = row % 2 ? r : 0;
+
+      for (let x = -r * 2 + shift; x < SIZE + r * 2; x += r * 2) {
+        // fill each scale so the row in front hides the one behind
+        trace(ctx, [circle(x, y, r, 40)], true);
+        ctx.fillStyle = g.bgColor;
+        ctx.fill();
+        for (const k of [1, 0.72, 0.44]) {
+          ctx.beginPath();
+          ctx.arc(x, y, r * k, Math.PI, TAU);
+          ctx.strokeStyle = g.bgColor2;
+          ctx.stroke();
+        }
+      }
+    }
+  },
+
+  // a leaded-glass window: jittered panes in jewel colors with dark lead between
+  glasspanes(ctx, _g, rng) {
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    const jewels = ['#1f6fb2', '#2e86c1', '#16a085', '#27ae60', '#8e44ad', '#c0392b', '#f39c12', '#d4ac0d'];
+    const n = 7;
+    const cell = SIZE / n;
+    const grid = [];
+
+    for (let y = 0; y <= n; y++) {
+      grid.push([]);
+      for (let x = 0; x <= n; x++) {
+        const edge = x === 0 || y === 0 || x === n || y === n;
+        grid[y].push([x * cell + (edge ? 0 : rng.float(-cell * 0.3, cell * 0.3)), y * cell + (edge ? 0 : rng.float(-cell * 0.3, cell * 0.3))]);
+      }
+    }
+
+    for (let y = 0; y < n; y++) {
+      for (let x = 0; x < n; x++) {
+        const quad4 = [grid[y][x], grid[y][x + 1], grid[y + 1][x + 1], grid[y + 1][x]];
+        const color = rng.pick(jewels);
+        const cx = (quad4[0][0] + quad4[2][0]) / 2;
+        const cy = (quad4[0][1] + quad4[2][1]) / 2;
+        const glow = ctx.createRadialGradient(cx - cell * 0.2, cy - cell * 0.2, 2, cx, cy, cell * 0.9);
+        glow.addColorStop(0, lighten(color, 0.18));
+        glow.addColorStop(1, darken(color, 0.12));
+        trace(ctx, [inflate(quad4, -3.5)], true);
+        ctx.fillStyle = glow;
+        ctx.fill();
+      }
+    }
+  },
+
+  // comic-book speed lines bursting out from the middle
+  speedlines(ctx, g, rng, t) {
+    solid(ctx, g);
+    const spin = t == null ? 0 : t * 0.2;
+    const wedges = [];
+
+    for (let i = 0; i < 70; i++) {
+      const a = spin + rng.float(0, TAU);
+      const spread = rng.float(0.006, 0.02);
+      const inner = rng.float(150, 260);
+      wedges.push([
+        [C + Math.cos(a) * inner, C + Math.sin(a) * inner],
+        [C + Math.cos(a - spread) * SIZE, C + Math.sin(a - spread) * SIZE],
+        [C + Math.cos(a + spread) * SIZE, C + Math.sin(a + spread) * SIZE],
+      ]);
+    }
+
+    fillPolys(ctx, wedges, g.bgColor2);
+  },
+
+  // woven cloth for embroidery: a fine crosshatch of slightly lighter and darker threads
+  fabric(ctx, g) {
+    solid(ctx, g);
+    ctx.lineWidth = 1.2;
+
+    for (const [angle, color] of [[0, lighten(g.bgColor, 0.05)], [Math.PI / 2, darken(g.bgColor, 0.05)]]) {
+      ctx.save();
+      ctx.translate(C, C);
+      ctx.rotate(angle);
+      ctx.strokeStyle = color;
+      ctx.beginPath();
+      for (let i = -SIZE; i < SIZE; i += 4) {
+        ctx.moveTo(-SIZE, i);
+        ctx.lineTo(SIZE, i);
+      }
+      ctx.stroke();
+      ctx.restore();
     }
   },
 };

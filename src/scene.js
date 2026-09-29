@@ -77,6 +77,7 @@ export function buildScene(g, t = null) {
     eyes: eyeInfo.positions,
     eyeRadius: eyeInfo.radius,
     eyeSize: g.eyeSize,
+    noseBottom: noseInfo.bottom,
     mouthY: noseInfo.bottom + g.mouthH * h * 0.4,
   };
 
